@@ -105,11 +105,13 @@ export interface Tuition {
   teaching_mode: TeachingMode;
   fee?: number;
   locality?: string;
+  city?: string;
   pincode?: string;
   posted_date: string;
   verify: boolean;
   slug: string;
   photo?: string;
+  unlocks: number;
 }
 
 export interface TuitionFilters {
