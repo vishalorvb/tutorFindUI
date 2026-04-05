@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import Footer from "@/components/home/Footer";
+import Navbar from "@/components/home/Navbar";
 import AuthLayout from "@/components/auth/AuthLayout";
 import LoginAuthFlow from "@/components/auth/LoginAuthFlow";
 
