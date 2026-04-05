@@ -1,46 +1,39 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import type { RegistrationFormData, FormErrors, RegistrationFormProps } from "@/types";
+import { useRouter } from "next/navigation";
+import type { FormErrors, NewUserFormData, NewUserFormProps } from "@/types";
 import { colors, gradients, shadows } from "@/config/theme";
 
-async function sendOtp(phone: string): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  console.log(`OTP sent to +91 ${phone}`);
+async function createUser(profile: NewUserFormData & { phoneNumber: string }): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 1200));
+  console.log("Creating user profile", profile);
 }
 
-function validate(data: RegistrationFormData): FormErrors {
+function validate(data: NewUserFormData): FormErrors {
   const errors: FormErrors = {};
 
   if (!data.fullName.trim()) {
     errors.fullName = "Full name is required";
   }
 
-  if (!data.email.trim()) {
-    errors.email = "Email is required";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+  if (data.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     errors.email = "Enter a valid email address";
-  }
-
-  if (!data.phone.trim()) {
-    errors.phone = "Phone number is required";
-  } else if (!/^\d{10}$/.test(data.phone.replace(/\D/g, ""))) {
-    errors.phone = "Enter a valid 10-digit phone number";
   }
 
   return errors;
 }
 
-export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
-  const [form, setForm] = useState<RegistrationFormData>({
+export default function NewUserForm({ phoneNumber }: NewUserFormProps) {
+  const router = useRouter();
+  const [form, setForm] = useState<NewUserFormData>({
     fullName: "",
     email: "",
-    phone: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
 
-  function handleChange(field: keyof RegistrationFormData, value: string) {
+  function handleChange(field: keyof NewUserFormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -58,8 +51,8 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
 
     setLoading(true);
     try {
-      await sendOtp(form.phone);
-      onOtpSent(form.phone);
+      await createUser({ ...form, phoneNumber });
+      router.push("/");
     } finally {
       setLoading(false);
     }
@@ -67,6 +60,13 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+      <div className="space-y-1 text-center">
+        <h2 className="text-lg font-bold text-slate-900">Complete your profile</h2>
+        <p className="text-sm text-slate-500">
+          Finish setting up your account for +91 {phoneNumber}
+        </p>
+      </div>
+
       <div>
         <label htmlFor="fullName" className="block text-sm font-semibold text-slate-700 mb-1.5">
           Full Name
@@ -84,14 +84,13 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
               : "border-slate-200 focus:ring-violet-200 focus:border-violet-400"
           }`}
         />
-        {errors.fullName && (
-          <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.fullName}</p>
-        )}
+        {errors.fullName && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.fullName}</p>}
       </div>
 
       <div>
         <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5">
           Email Address
+          <span className="ml-1 text-slate-400 font-normal">(optional)</span>
         </label>
         <input
           id="email"
@@ -105,34 +104,10 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
               : "border-slate-200 focus:ring-violet-200 focus:border-violet-400"
           }`}
         />
-        {errors.email && (
+        {errors.email ? (
           <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.email}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="phone" className="block text-sm font-semibold text-slate-700 mb-1.5">
-          Phone Number
-        </label>
-        <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400 font-medium">
-            +91
-          </span>
-          <input
-            id="phone"
-            type="tel"
-            placeholder="98765 43210"
-            value={form.phone}
-            onChange={(e) => handleChange("phone", e.target.value)}
-            className={`w-full pl-12 pr-4 py-3 rounded-xl border text-sm font-medium text-slate-900 placeholder:text-slate-400 bg-white focus:outline-none focus:ring-2 transition-all ${
-              errors.phone
-                ? "border-red-400 focus:ring-red-200"
-                : "border-slate-200 focus:ring-violet-200 focus:border-violet-400"
-            }`}
-          />
-        </div>
-        {errors.phone && (
-          <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.phone}</p>
+        ) : (
+          <p className="mt-1.5 text-xs text-slate-400">Use email to receive tutor recommendations and updates</p>
         )}
       </div>
 
@@ -151,14 +126,14 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            Sending OTP…
+            Completing profile…
           </span>
         ) : (
-          "Continue"
+          "Complete Profile"
         )}
       </button>
 
-      <p className="text-center text-xs text-slate-400 leading-relaxed pt-2">
+      <p className="text-center text-xs text-slate-400 leading-relaxed">
         By continuing, you agree to our{" "}
         <a href="#" className="font-semibold hover:underline" style={{ color: colors.primary }}>
           Terms of Service

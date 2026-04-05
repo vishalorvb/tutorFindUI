@@ -32,8 +32,8 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           {/* Illustration image */}
           <div className="relative w-72 h-72 mx-auto mb-8 rounded-3xl overflow-hidden border border-white/15 shadow-2xl shadow-violet-900/50">
             <Image
-              src="/homeTech.jpg"
-              alt="Education and learning illustration"
+              src="/images/auth/login.png"
+              alt="Student learning with tutor"
               fill
               className="object-cover"
               priority

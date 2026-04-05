@@ -9,13 +9,20 @@ import OtpVerification from "./OtpVerification";
 export default function RegistrationAuthFlow() {
   const [step, setStep] = useState<AuthStep>("form");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
 
   function handleOtpSent(phone: string) {
     setPhoneNumber(phone);
+    setOtp(Array(6).fill(""));
     setStep("otp");
   }
 
   function handleChangePhone() {
+    setOtp(Array(6).fill(""));
+    setStep("form");
+  }
+
+  function handleVerified() {
     setStep("form");
   }
 
@@ -33,7 +40,13 @@ export default function RegistrationAuthFlow() {
         {step === "form" ? (
           <RegistrationForm onOtpSent={handleOtpSent} />
         ) : (
-          <OtpVerification phoneNumber={phoneNumber} onChangePhone={handleChangePhone} />
+          <OtpVerification
+            phoneNumber={phoneNumber}
+            otp={otp}
+            setOtp={setOtp}
+            onChangePhone={handleChangePhone}
+            onVerified={handleVerified}
+          />
         )}
       </div>
     </>

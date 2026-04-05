@@ -4,14 +4,15 @@ import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent, type C
 import type { OtpVerificationProps } from "@/types";
 import { colors, gradients, shadows, withAlpha } from "@/config/theme";
 
-const OTP_LENGTH = 4;
+const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 30;
 
-async function verifyOtp(phone: string, otp: string): Promise<boolean> {
+async function verifyOtp(phone: string, otp: string): Promise<{ isNewUser: boolean }> {
   // Mock API call — replace with real API
   await new Promise((resolve) => setTimeout(resolve, 1500));
   console.log(`Verifying OTP ${otp} for +91 ${phone}`);
-  return true;
+  const lastDigit = Number(phone.at(-1) ?? 0);
+  return { isNewUser: lastDigit % 2 !== 0 };
 }
 
 async function resendOtp(phone: string): Promise<void> {
@@ -26,10 +27,8 @@ function maskPhone(phone: string): string {
   return "X".repeat(digits.length - 4) + digits.slice(-4);
 }
 
-export default function OtpVerification({ phoneNumber, onChangePhone }: OtpVerificationProps) {
-  const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+export default function OtpVerification({ phoneNumber, otp, setOtp, onChangePhone, onVerified }: OtpVerificationProps) {
   const [loading, setLoading] = useState(false);
-  const [verified, setVerified] = useState(false);
   const [error, setError] = useState("");
   const [resendTimer, setResendTimer] = useState(RESEND_COOLDOWN);
   const [resending, setResending] = useState(false);
@@ -46,6 +45,13 @@ export default function OtpVerification({ phoneNumber, onChangePhone }: OtpVerif
     }, 1000);
     return () => clearInterval(interval);
   }, [resendTimer]);
+
+  useEffect(() => {
+    const code = otp.join("");
+    if (code.length === OTP_LENGTH && otp.every(Boolean) && !loading) {
+      void submitOtp(code);
+    }
+  }, [loading, otp]);
 
   function handleChange(index: number, value: string) {
     if (!/^\d?$/.test(value)) return;
@@ -82,28 +88,26 @@ export default function OtpVerification({ phoneNumber, onChangePhone }: OtpVerif
     inputRefs.current[focusIndex]?.focus();
   }
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const code = otp.join("");
-
+  async function submitOtp(code: string) {
     if (code.length !== OTP_LENGTH) {
-      setError("Please enter the complete 4-digit code");
+      setError("Please enter the complete 6-digit code");
       return;
     }
 
     setLoading(true);
     try {
-      const success = await verifyOtp(phoneNumber, code);
-      if (success) {
-        setVerified(true);
-      } else {
-        setError("Invalid OTP. Please try again.");
-      }
+      const result = await verifyOtp(phoneNumber, code);
+      onVerified(result.isNewUser);
     } catch {
       setError("Verification failed. Please try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    await submitOtp(otp.join(""));
   }
 
   async function handleResend() {
@@ -120,25 +124,6 @@ export default function OtpVerification({ phoneNumber, onChangePhone }: OtpVerif
     }
   }
 
-  if (verified) {
-    return (
-      <div className="text-center py-10">
-        <div
-          className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-5"
-          style={{ background: gradients.success }}
-        >
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">You&apos;re all set!</h2>
-        <p className="text-sm text-slate-500">
-          We&apos;ll connect you with the best tutors shortly.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
       {/* Header */}
@@ -153,7 +138,7 @@ export default function OtpVerification({ phoneNumber, onChangePhone }: OtpVerif
         </div>
         <h2 className="text-lg font-bold text-slate-900 mb-1">Verify your phone</h2>
         <p className="text-sm text-slate-500">
-          Enter the 4-digit code sent to{" "}
+          Enter OTP sent to{" "}
           <span className="font-semibold text-slate-700">+91 {maskPhone(phoneNumber)}</span>
         </p>
       </div>
@@ -205,7 +190,7 @@ export default function OtpVerification({ phoneNumber, onChangePhone }: OtpVerif
             Verifying…
           </span>
         ) : (
-          "Verify OTP"
+          "Verify & Continue"
         )}
       </button>
 
@@ -235,7 +220,7 @@ export default function OtpVerification({ phoneNumber, onChangePhone }: OtpVerif
           className="text-sm font-semibold hover:underline"
           style={{ color: colors.primary }}
         >
-          ← Change phone number
+          ← Change Number
         </button>
       </div>
     </form>
