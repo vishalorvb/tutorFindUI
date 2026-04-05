@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthLayout from "@/components/auth/AuthLayout";
-import LoginAuthFlow from "@/components/auth/LoginAuthFlow";
+import RegistrationAuthFlow from "@/components/auth/RegistrationAuthFlow";
 
 export const metadata: Metadata = {
-  title: "Login | Find Tutors Near You",
+  title: "Register | Find Tutors Near You",
   robots: "noindex, nofollow",
 };
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <>
       <Navbar />
       <AuthLayout>
-        <LoginAuthFlow />
+        <RegistrationAuthFlow />
       </AuthLayout>
       <Footer />
     </>

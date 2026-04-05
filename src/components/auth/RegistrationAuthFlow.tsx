@@ -3,10 +3,10 @@
 import { useState } from "react";
 import type { AuthStep } from "@/types";
 import AuthHeader from "./AuthHeader";
-import LoginForm from "./LoginForm";
+import RegistrationForm from "./RegistrationForm";
 import OtpVerification from "./OtpVerification";
 
-export default function LoginAuthFlow() {
+export default function RegistrationAuthFlow() {
   const [step, setStep] = useState<AuthStep>("form");
   const [phoneNumber, setPhoneNumber] = useState("");
 
@@ -25,13 +25,13 @@ export default function LoginAuthFlow() {
         title={step === "form" ? "Welcome to TutorFind" : "OTP Verification"}
         subtitle={
           step === "form"
-            ? "Create your account or log in to get started"
+            ? "Create your account to get started"
             : "One last step to verify your identity"
         }
       />
       <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-7 sm:p-9">
         {step === "form" ? (
-          <LoginForm onOtpSent={handleOtpSent} />
+          <RegistrationForm onOtpSent={handleOtpSent} />
         ) : (
           <OtpVerification phoneNumber={phoneNumber} onChangePhone={handleChangePhone} />
         )}

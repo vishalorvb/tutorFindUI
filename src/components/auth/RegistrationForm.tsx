@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import type { LoginFormData, FormErrors, LoginFormProps } from "@/types";
+import type { RegistrationFormData, FormErrors, RegistrationFormProps } from "@/types";
 import { colors, gradients, shadows } from "@/config/theme";
 
 async function sendOtp(phone: string): Promise<void> {
@@ -10,7 +10,7 @@ async function sendOtp(phone: string): Promise<void> {
   console.log(`OTP sent to +91 ${phone}`);
 }
 
-function validate(data: LoginFormData): FormErrors {
+function validate(data: RegistrationFormData): FormErrors {
   const errors: FormErrors = {};
 
   if (!data.fullName.trim()) {
@@ -32,8 +32,8 @@ function validate(data: LoginFormData): FormErrors {
   return errors;
 }
 
-export default function LoginForm({ onOtpSent }: LoginFormProps) {
-  const [form, setForm] = useState<LoginFormData>({
+export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
+  const [form, setForm] = useState<RegistrationFormData>({
     fullName: "",
     email: "",
     phone: "",
@@ -41,7 +41,7 @@ export default function LoginForm({ onOtpSent }: LoginFormProps) {
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
 
-  function handleChange(field: keyof LoginFormData, value: string) {
+  function handleChange(field: keyof RegistrationFormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
