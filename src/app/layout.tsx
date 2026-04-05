@@ -4,6 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import { ToastProvider } from "@/components/toast/ToastContext";
 import ToastContainer from "@/components/toast/ToastContainer";
+import Navbar from "@/components/home/Navbar";
+import Footer from "@/components/home/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +43,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ToastProvider>
-          {children}
+          <Navbar />
+          <div className="flex-1">{children}</div>
+          <Footer />
           <ToastContainer />
         </ToastProvider>
       </body>

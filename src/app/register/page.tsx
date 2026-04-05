@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/home/Navbar";
-import Footer from "@/components/home/Footer";
 import AuthLayout from "@/components/auth/AuthLayout";
 import RegistrationAuthFlow from "@/components/auth/RegistrationAuthFlow";
 
@@ -11,12 +9,8 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <>
-      <Navbar />
-      <AuthLayout>
-        <RegistrationAuthFlow />
-      </AuthLayout>
-      <Footer />
-    </>
+    <AuthLayout>
+      <RegistrationAuthFlow />
+    </AuthLayout>
   );
 }

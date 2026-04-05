@@ -92,3 +92,31 @@ export interface OtpVerificationProps {
 export interface PhoneInputFormProps {
   onOtpSent: (phone: string) => void;
 }
+
+// ─── Tuition Types ───
+
+export type TeachingMode = "online" | "home";
+
+export interface Tuition {
+  id: number;
+  subject: string;
+  course: string;
+  description?: string;
+  teaching_mode: TeachingMode;
+  fee?: number;
+  locality?: string;
+  pincode?: string;
+  posted_date: string;
+  verify: boolean;
+  slug: string;
+  photo?: string;
+}
+
+export interface TuitionFilters {
+  search: string;
+  location: string;
+  subject: string;
+  course: string;
+  teachingMode: TeachingMode | "";
+  sortBy: "latest" | "fee-high-low";
+}

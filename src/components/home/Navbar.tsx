@@ -57,11 +57,11 @@ export default function Navbar() {
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-3">
-            <a href="#" className="text-sm font-semibold text-slate-600 hover:text-violet-700 transition-colors px-4 py-2.5 rounded-xl hover:bg-violet-50/80">
+            <a href="/login" className="text-sm font-semibold text-slate-600 hover:text-violet-700 transition-colors px-4 py-2.5 rounded-xl hover:bg-violet-50/80">
               Log In
             </a>
             <a
-              href="#"
+              href="/register"
               className="relative text-sm font-bold text-white px-5 py-2.5 rounded-xl overflow-hidden group shadow-lg shadow-violet-300/40 hover:shadow-violet-400/50 transition-shadow duration-300"
               style={{ background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)" }}
             >
@@ -113,10 +113,10 @@ export default function Navbar() {
               </a>
             ))}
             <div className="pt-3 px-2 border-t border-slate-100 flex flex-col gap-2 mt-1">
-              <a href="#" className="block px-4 py-2.5 text-sm font-semibold text-slate-700 hover:text-violet-700 rounded-xl text-center hover:bg-violet-50 transition-colors">
+              <a href="/login" className="block px-4 py-2.5 text-sm font-semibold text-slate-700 hover:text-violet-700 rounded-xl text-center hover:bg-violet-50 transition-colors">
                 Log In
               </a>
-              <a href="#" className="block px-4 py-3 text-sm font-bold text-white rounded-xl text-center shadow-lg shadow-violet-300/30"
+              <a href="/register" className="block px-4 py-3 text-sm font-bold text-white rounded-xl text-center shadow-lg shadow-violet-300/30"
                 style={{ background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)" }}>
                 Get Started →
               </a>
