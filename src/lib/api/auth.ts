@@ -9,8 +9,8 @@ import type {
 import { apiRequest } from "./http";
 
 const AUTH_ENDPOINTS = {
-  sendOtp: process.env.NEXT_PUBLIC_SEND_OTP_API_URL ?? "/auth/send-otp",
-  resendOtp: process.env.NEXT_PUBLIC_RESEND_OTP_API_URL ?? "/auth/resend-otp",
+  sendOtp: process.env.NEXT_PUBLIC_SEND_OTP_API_URL ?? "http://127.0.0.1:8000/usermanager/sendOtp",
+  resendOtp: process.env.NEXT_PUBLIC_RESEND_OTP_API_URL ?? "http://127.0.0.1:8000/usermanager/sendOtp",
   verifyOtp: process.env.NEXT_PUBLIC_VERIFY_OTP_API_URL ?? "/auth/verify-otp",
   completeProfile:
     process.env.NEXT_PUBLIC_COMPLETE_PROFILE_API_URL ??
@@ -24,14 +24,14 @@ export function normalizePhoneNumber(phoneNumber: string): string {
 export async function sendOtp(payload: SendOtpPayload): Promise<SendOtpResponse> {
   return apiRequest<SendOtpResponse>(AUTH_ENDPOINTS.sendOtp, {
     method: "POST",
-    body: payload,
+    body: { phone_number: payload.phoneNumber },
   });
 }
 
 export async function resendOtp(payload: SendOtpPayload): Promise<SendOtpResponse> {
   return apiRequest<SendOtpResponse>(AUTH_ENDPOINTS.resendOtp, {
     method: "POST",
-    body: payload,
+    body: { phone_number: payload.phoneNumber },
   });
 }
 
@@ -45,6 +45,10 @@ export async function verifyOtp(payload: VerifyOtpPayload): Promise<VerifyOtpRes
 export async function completeProfile(payload: CompleteProfilePayload): Promise<CompleteProfileResponse> {
   return apiRequest<CompleteProfileResponse>(AUTH_ENDPOINTS.completeProfile, {
     method: "POST",
-    body: payload,
+    body: {
+      full_name: payload.fullName,
+      email: payload.email,
+      phone_number: normalizePhoneNumber(payload.phoneNumber),
+    },
   });
 }

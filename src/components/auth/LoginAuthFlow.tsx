@@ -13,18 +13,18 @@ export default function LoginAuthFlow() {
   const router = useRouter();
   const [step, setStep] = useState<LoginStep>("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
+  const [otp, setOtp] = useState<string[]>(Array(4).fill(""));
   const [onboardingToken, setOnboardingToken] = useState<string | undefined>();
 
   function handleOtpSent(phone: string) {
     setPhoneNumber(phone);
-    setOtp(Array(6).fill(""));
+    setOtp(Array(4).fill(""));
     setOnboardingToken(undefined);
     setStep("otp");
   }
 
   function handleChangePhone() {
-    setOtp(Array(6).fill(""));
+    setOtp(Array(4).fill(""));
     setOnboardingToken(undefined);
     setStep("phone");
   }
@@ -56,7 +56,7 @@ export default function LoginAuthFlow() {
     step === "phone"
       ? "Log in or create your account to connect with trusted tutors"
       : step === "otp"
-        ? "We sent a 6-digit code to your mobile number"
+        ? "We sent a 4-digit code to your mobile number"
         : "Tell us a bit about yourself to finish your account";
 
   return (

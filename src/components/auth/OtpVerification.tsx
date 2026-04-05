@@ -6,7 +6,7 @@ import { colors, gradients, shadows, withAlpha } from "@/config/theme";
 import { resendOtp, verifyOtp } from "@/lib/api/auth";
 import { getApiErrorMessage } from "@/lib/api/http";
 
-const OTP_LENGTH = 6;
+const OTP_LENGTH = 4;
 const RESEND_COOLDOWN = 30;
 
 function maskPhone(phone: string): string {
@@ -78,7 +78,7 @@ export default function OtpVerification({ phoneNumber, otp, setOtp, onChangePhon
 
   async function submitOtp(code: string) {
     if (code.length !== OTP_LENGTH) {
-      setError("Please enter the complete 6-digit code");
+      setError("Please enter the complete 4-digit code");
       return;
     }
 

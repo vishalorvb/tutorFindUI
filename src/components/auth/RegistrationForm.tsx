@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import type { RegistrationFormData, FormErrors, RegistrationFormProps } from "@/types";
 import { colors, gradients, shadows } from "@/config/theme";
-import { normalizePhoneNumber, sendOtp } from "@/lib/api/auth";
+import { completeProfile, normalizePhoneNumber, sendOtp } from "@/lib/api/auth";
 import { getApiErrorMessage } from "@/lib/api/http";
 
 function validate(data: RegistrationFormData): FormErrors {
@@ -59,12 +59,17 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
         ...form,
         phone: normalizePhoneNumber(form.phone),
       };
+      await completeProfile({
+        phoneNumber: payload.phone,
+        fullName: payload.fullName,
+        email: payload.email,
+      });
       await sendOtp({ phoneNumber: payload.phone });
       onOtpSent(payload);
     } catch (submitError) {
       setErrors((prev) => ({
         ...prev,
-        phone: getApiErrorMessage(submitError, "Unable to send OTP. Please try again."),
+        phone: getApiErrorMessage(submitError, "Unable to register. Please try again."),
       }));
     } finally {
       setLoading(false);
