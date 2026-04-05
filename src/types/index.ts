@@ -4,11 +4,6 @@ export interface RegistrationFormData {
   phone: string;
 }
 
-export interface NewUserFormData {
-  fullName: string;
-  email: string;
-}
-
 export interface AuthUser {
   id: string;
   fullName?: string;
@@ -47,6 +42,17 @@ export interface VerifyOtpResponse {
   user?: AuthUser;
 }
 
+export interface LoginPayload {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type?: string;
+  [key: string]: unknown;
+}
+
 export interface CompleteProfilePayload {
   phoneNumber: string;
   fullName: string;
@@ -69,7 +75,7 @@ export interface FormErrors {
 }
 
 export type AuthStep = "form" | "otp";
-export type LoginStep = "phone" | "otp" | "newUser";
+export type LoginStep = "phone" | "otp";
 
 export interface RegistrationFormProps {
   onOtpSent: (formData: RegistrationFormData) => void;
@@ -80,15 +86,9 @@ export interface OtpVerificationProps {
   otp: string[];
   setOtp: (otp: string[]) => void;
   onChangePhone: () => void;
-  onVerified: (result: VerifyOtpResponse) => void | Promise<void>;
+  onVerified: (otpCode: string) => void | Promise<void>;
 }
 
 export interface PhoneInputFormProps {
   onOtpSent: (phone: string) => void;
-}
-
-export interface NewUserFormProps {
-  phoneNumber: string;
-  onboardingToken?: string;
-  onCompleted: (result: CompleteProfileResponse) => void | Promise<void>;
 }

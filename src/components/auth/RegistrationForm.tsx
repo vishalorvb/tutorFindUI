@@ -5,6 +5,7 @@ import type { RegistrationFormData, FormErrors, RegistrationFormProps } from "@/
 import { colors, gradients, shadows } from "@/config/theme";
 import { completeProfile, normalizePhoneNumber, sendOtp } from "@/lib/api/auth";
 import { getApiErrorMessage } from "@/lib/api/http";
+import { useToast } from "@/components/toast/ToastContext";
 
 function validate(data: RegistrationFormData): FormErrors {
   const errors: FormErrors = {};
@@ -36,6 +37,7 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   function handleChange(field: keyof RegistrationFormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -67,10 +69,12 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
       await sendOtp({ phoneNumber: payload.phone });
       onOtpSent(payload);
     } catch (submitError) {
+      const msg = getApiErrorMessage(submitError, "Unable to register. Please try again.");
       setErrors((prev) => ({
         ...prev,
-        phone: getApiErrorMessage(submitError, "Unable to register. Please try again."),
+        phone: msg,
       }));
+      showToast(msg);
     } finally {
       setLoading(false);
     }

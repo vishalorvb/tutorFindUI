@@ -1,6 +1,8 @@
 import type {
   CompleteProfilePayload,
   CompleteProfileResponse,
+  LoginPayload,
+  LoginResponse,
   SendOtpPayload,
   SendOtpResponse,
   VerifyOtpPayload,
@@ -11,6 +13,7 @@ import { apiRequest } from "./http";
 const AUTH_ENDPOINTS = {
   sendOtp: process.env.NEXT_PUBLIC_SEND_OTP_API_URL ?? "http://127.0.0.1:8000/usermanager/sendOtp",
   resendOtp: process.env.NEXT_PUBLIC_RESEND_OTP_API_URL ?? "http://127.0.0.1:8000/usermanager/sendOtp",
+  login: process.env.NEXT_PUBLIC_LOGIN_API_URL ?? "http://127.0.0.1:8000/usermanager/login",
   verifyOtp: process.env.NEXT_PUBLIC_VERIFY_OTP_API_URL ?? "/auth/verify-otp",
   completeProfile:
     process.env.NEXT_PUBLIC_COMPLETE_PROFILE_API_URL ??
@@ -39,6 +42,13 @@ export async function verifyOtp(payload: VerifyOtpPayload): Promise<VerifyOtpRes
   return apiRequest<VerifyOtpResponse>(AUTH_ENDPOINTS.verifyOtp, {
     method: "POST",
     body: payload,
+  });
+}
+
+export async function login(payload: LoginPayload): Promise<LoginResponse> {
+  return apiRequest<LoginResponse>(AUTH_ENDPOINTS.login, {
+    method: "POST",
+    body: { username: payload.username, password: payload.password },
   });
 }
 

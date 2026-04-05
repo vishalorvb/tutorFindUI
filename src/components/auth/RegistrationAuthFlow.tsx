@@ -2,14 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { AuthStep, RegistrationFormData, VerifyOtpResponse } from "@/types";
-import { saveAuthSession } from "@/lib/auth/session";
+import type { AuthStep, RegistrationFormData } from "@/types";
+import { login } from "@/lib/api/auth";
+import { saveJwt } from "@/lib/auth/session";
+import { getApiErrorMessage } from "@/lib/api/http";
+import { useToast } from "@/components/toast/ToastContext";
 import AuthHeader from "./AuthHeader";
 import RegistrationForm from "./RegistrationForm";
 import OtpVerification from "./OtpVerification";
 
 export default function RegistrationAuthFlow() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [step, setStep] = useState<AuthStep>("form");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState<string[]>(Array(4).fill(""));
@@ -28,9 +32,20 @@ export default function RegistrationAuthFlow() {
     setStep("form");
   }
 
-  async function handleVerified(result: VerifyOtpResponse) {
-    saveAuthSession(result.tokens, result.user);
-    router.push(result.redirectTo ?? "/");
+  async function handleVerified(otpCode: string) {
+    try {
+      const result = await login({
+        username: phoneNumber,
+        password: otpCode,
+      });
+      saveJwt(result.access_token);
+      showToast("Registration successful!", "success");
+      router.push("/");
+    } catch (err) {
+      const msg = getApiErrorMessage(err, "Login failed. Please try again.");
+      showToast(msg);
+      throw err;
+    }
   }
 
   return (

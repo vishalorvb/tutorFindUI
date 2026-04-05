@@ -2,62 +2,58 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { CompleteProfileResponse, LoginStep, VerifyOtpResponse } from "@/types";
-import { saveAuthSession } from "@/lib/auth/session";
+import type { LoginStep, LoginResponse } from "@/types";
+import { login } from "@/lib/api/auth";
+import { saveJwt } from "@/lib/auth/session";
+import { getApiErrorMessage } from "@/lib/api/http";
+import { useToast } from "@/components/toast/ToastContext";
 import AuthHeader from "./AuthHeader";
-import NewUserForm from "./NewUserForm";
 import OtpVerification from "./OtpVerification";
 import PhoneInputForm from "./PhoneInputForm";
 
 export default function LoginAuthFlow() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [step, setStep] = useState<LoginStep>("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState<string[]>(Array(4).fill(""));
-  const [onboardingToken, setOnboardingToken] = useState<string | undefined>();
 
   function handleOtpSent(phone: string) {
     setPhoneNumber(phone);
     setOtp(Array(4).fill(""));
-    setOnboardingToken(undefined);
     setStep("otp");
   }
 
   function handleChangePhone() {
     setOtp(Array(4).fill(""));
-    setOnboardingToken(undefined);
     setStep("phone");
   }
 
-  async function handleVerified(result: VerifyOtpResponse) {
-    if (result.isNewUser) {
-      setOnboardingToken(result.onboardingToken);
-      setStep("newUser");
-      return;
+  async function handleVerified(otpCode: string) {
+    try {
+      const result: LoginResponse = await login({
+        username: phoneNumber,
+        password: otpCode,
+      });
+      saveJwt(result.access_token);
+      showToast("Login successful!", "success");
+      router.push("/");
+    } catch (err) {
+      const msg = getApiErrorMessage(err, "Login failed. Please try again.");
+      showToast(msg);
+      throw err;
     }
-
-    saveAuthSession(result.tokens, result.user);
-    router.push(result.redirectTo ?? "/");
-  }
-
-  async function handleProfileCompleted(result: CompleteProfileResponse) {
-    saveAuthSession(result.tokens, result.user);
-    router.push(result.redirectTo ?? "/");
   }
 
   const title =
     step === "phone"
       ? "Continue with your phone"
-      : step === "otp"
-        ? "Enter verification code"
-        : "Set up your profile";
+      : "Enter verification code";
 
   const subtitle =
     step === "phone"
       ? "Log in or create your account to connect with trusted tutors"
-      : step === "otp"
-        ? "We sent a 4-digit code to your mobile number"
-        : "Tell us a bit about yourself to finish your account";
+      : "We sent a 4-digit code to your mobile number";
 
   return (
     <>
@@ -71,13 +67,6 @@ export default function LoginAuthFlow() {
             setOtp={setOtp}
             onChangePhone={handleChangePhone}
             onVerified={handleVerified}
-          />
-        )}
-        {step === "newUser" && (
-          <NewUserForm
-            phoneNumber={phoneNumber}
-            onboardingToken={onboardingToken}
-            onCompleted={handleProfileCompleted}
           />
         )}
       </div>

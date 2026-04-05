@@ -1,6 +1,6 @@
-import type { CompleteProfileResponse, SendOtpResponse, VerifyOtpResponse } from "@/types";
+import type { CompleteProfileResponse, LoginResponse, SendOtpResponse, VerifyOtpResponse } from "@/types";
 
-type KnownApiResponse = SendOtpResponse | VerifyOtpResponse | CompleteProfileResponse;
+type KnownApiResponse = SendOtpResponse | VerifyOtpResponse | CompleteProfileResponse | LoginResponse;
 
 interface ApiErrorPayload {
   message?: string;

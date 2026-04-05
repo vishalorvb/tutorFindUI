@@ -5,6 +5,7 @@ import type { PhoneInputFormProps } from "@/types";
 import { colors, gradients, shadows } from "@/config/theme";
 import { normalizePhoneNumber, sendOtp } from "@/lib/api/auth";
 import { getApiErrorMessage } from "@/lib/api/http";
+import { useToast } from "@/components/toast/ToastContext";
 
 function validatePhone(phone: string): string | null {
   const digits = normalizePhoneNumber(phone);
@@ -17,6 +18,7 @@ export default function PhoneInputForm({ onOtpSent }: PhoneInputFormProps) {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -32,7 +34,9 @@ export default function PhoneInputForm({ onOtpSent }: PhoneInputFormProps) {
       await sendOtp({ phoneNumber: normalizedPhone });
       onOtpSent(normalizedPhone);
     } catch (submitError) {
-      setError(getApiErrorMessage(submitError, "Unable to send OTP. Please try again."));
+      const msg = getApiErrorMessage(submitError, "Unable to send OTP. Please try again.");
+      setError(msg);
+      showToast(msg);
     } finally {
       setLoading(false);
     }

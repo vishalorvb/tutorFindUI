@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent, type ClipboardEvent } from "react";
 import type { OtpVerificationProps } from "@/types";
 import { colors, gradients, shadows, withAlpha } from "@/config/theme";
-import { resendOtp, verifyOtp } from "@/lib/api/auth";
+import { resendOtp } from "@/lib/api/auth";
 import { getApiErrorMessage } from "@/lib/api/http";
+import { useToast } from "@/components/toast/ToastContext";
 
 const OTP_LENGTH = 4;
 const RESEND_COOLDOWN = 30;
@@ -21,6 +22,7 @@ export default function OtpVerification({ phoneNumber, otp, setOtp, onChangePhon
   const [resendTimer, setResendTimer] = useState(RESEND_COOLDOWN);
   const [resending, setResending] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { showToast } = useToast();
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
@@ -34,16 +36,20 @@ export default function OtpVerification({ phoneNumber, otp, setOtp, onChangePhon
     return () => clearInterval(interval);
   }, [resendTimer]);
 
+  const [submitted, setSubmitted] = useState(false);
+
   useEffect(() => {
     const code = otp.join("");
-    if (code.length === OTP_LENGTH && otp.every(Boolean) && !loading) {
+    if (code.length === OTP_LENGTH && otp.every(Boolean) && !loading && !submitted) {
+      setSubmitted(true);
       void submitOtp(code);
     }
-  }, [loading, otp]);
+  }, [loading, otp, submitted]);
 
   function handleChange(index: number, value: string) {
     if (!/^\d?$/.test(value)) return;
     setError("");
+    setSubmitted(false);
 
     const newOtp = [...otp];
     newOtp[index] = value;
@@ -84,10 +90,11 @@ export default function OtpVerification({ phoneNumber, otp, setOtp, onChangePhon
 
     setLoading(true);
     try {
-      const result = await verifyOtp({ phoneNumber, otp: code });
-      await onVerified(result);
+      await onVerified(code);
     } catch (submitError) {
-      setError(getApiErrorMessage(submitError, "Verification failed. Please try again."));
+      const msg = getApiErrorMessage(submitError, "Verification failed. Please try again.");
+      setError(msg);
+      showToast(msg);
     } finally {
       setLoading(false);
     }
