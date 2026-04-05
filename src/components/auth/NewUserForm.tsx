@@ -1,14 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import type { FormErrors, NewUserFormData, NewUserFormProps } from "@/types";
 import { colors, gradients, shadows } from "@/config/theme";
-
-async function createUser(profile: NewUserFormData & { phoneNumber: string }): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 1200));
-  console.log("Creating user profile", profile);
-}
+import { completeProfile } from "@/lib/api/auth";
+import { getApiErrorMessage } from "@/lib/api/http";
 
 function validate(data: NewUserFormData): FormErrors {
   const errors: FormErrors = {};
@@ -24,17 +20,20 @@ function validate(data: NewUserFormData): FormErrors {
   return errors;
 }
 
-export default function NewUserForm({ phoneNumber }: NewUserFormProps) {
-  const router = useRouter();
+export default function NewUserForm({ phoneNumber, onboardingToken, onCompleted }: NewUserFormProps) {
   const [form, setForm] = useState<NewUserFormData>({
     fullName: "",
     email: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   function handleChange(field: keyof NewUserFormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+    if (submitError) {
+      setSubmitError("");
+    }
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
@@ -51,8 +50,15 @@ export default function NewUserForm({ phoneNumber }: NewUserFormProps) {
 
     setLoading(true);
     try {
-      await createUser({ ...form, phoneNumber });
-      router.push("/");
+      const result = await completeProfile({
+        phoneNumber,
+        fullName: form.fullName.trim(),
+        email: form.email.trim() || undefined,
+        onboardingToken,
+      });
+      await onCompleted(result);
+    } catch (profileError) {
+      setSubmitError(getApiErrorMessage(profileError, "Unable to complete profile. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -110,6 +116,10 @@ export default function NewUserForm({ phoneNumber }: NewUserFormProps) {
           <p className="mt-1.5 text-xs text-slate-400">Use email to receive tutor recommendations and updates</p>
         )}
       </div>
+
+      {submitError && (
+        <p className="text-center text-xs text-red-500 font-medium">{submitError}</p>
+      )}
 
       <button
         type="submit"

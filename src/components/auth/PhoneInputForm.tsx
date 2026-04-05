@@ -3,15 +3,11 @@
 import { useState, type FormEvent } from "react";
 import type { PhoneInputFormProps } from "@/types";
 import { colors, gradients, shadows } from "@/config/theme";
-
-async function sendOtp(phone: string): Promise<void> {
-  // Mock API call — replace with real API
-  await new Promise((resolve) => setTimeout(resolve, 1200));
-  console.log(`OTP sent to +91 ${phone}`);
-}
+import { normalizePhoneNumber, sendOtp } from "@/lib/api/auth";
+import { getApiErrorMessage } from "@/lib/api/http";
 
 function validatePhone(phone: string): string | null {
-  const digits = phone.replace(/\D/g, "");
+  const digits = normalizePhoneNumber(phone);
   if (!digits) return "Phone number is required";
   if (!/^\d{10}$/.test(digits)) return "Enter a valid 10-digit phone number";
   return null;
@@ -32,8 +28,11 @@ export default function PhoneInputForm({ onOtpSent }: PhoneInputFormProps) {
 
     setLoading(true);
     try {
-      await sendOtp(phone);
-      onOtpSent(phone.replace(/\D/g, ""));
+      const normalizedPhone = normalizePhoneNumber(phone);
+      await sendOtp({ phoneNumber: normalizedPhone });
+      onOtpSent(normalizedPhone);
+    } catch (submitError) {
+      setError(getApiErrorMessage(submitError, "Unable to send OTP. Please try again."));
     } finally {
       setLoading(false);
     }

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { LoginStep } from "@/types";
+import type { CompleteProfileResponse, LoginStep, VerifyOtpResponse } from "@/types";
+import { saveAuthSession } from "@/lib/auth/session";
 import AuthHeader from "./AuthHeader";
 import NewUserForm from "./NewUserForm";
 import OtpVerification from "./OtpVerification";
@@ -13,25 +14,35 @@ export default function LoginAuthFlow() {
   const [step, setStep] = useState<LoginStep>("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
+  const [onboardingToken, setOnboardingToken] = useState<string | undefined>();
 
   function handleOtpSent(phone: string) {
     setPhoneNumber(phone);
     setOtp(Array(6).fill(""));
+    setOnboardingToken(undefined);
     setStep("otp");
   }
 
   function handleChangePhone() {
     setOtp(Array(6).fill(""));
+    setOnboardingToken(undefined);
     setStep("phone");
   }
 
-  function handleVerified(isNewUser: boolean) {
-    if (isNewUser) {
+  async function handleVerified(result: VerifyOtpResponse) {
+    if (result.isNewUser) {
+      setOnboardingToken(result.onboardingToken);
       setStep("newUser");
       return;
     }
 
-    router.push("/");
+    saveAuthSession(result.tokens, result.user);
+    router.push(result.redirectTo ?? "/");
+  }
+
+  async function handleProfileCompleted(result: CompleteProfileResponse) {
+    saveAuthSession(result.tokens, result.user);
+    router.push(result.redirectTo ?? "/");
   }
 
   const title =
@@ -62,7 +73,13 @@ export default function LoginAuthFlow() {
             onVerified={handleVerified}
           />
         )}
-        {step === "newUser" && <NewUserForm phoneNumber={phoneNumber} />}
+        {step === "newUser" && (
+          <NewUserForm
+            phoneNumber={phoneNumber}
+            onboardingToken={onboardingToken}
+            onCompleted={handleProfileCompleted}
+          />
+        )}
       </div>
     </>
   );

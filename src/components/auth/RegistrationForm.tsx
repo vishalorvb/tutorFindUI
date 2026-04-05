@@ -3,11 +3,8 @@
 import { useState, type FormEvent } from "react";
 import type { RegistrationFormData, FormErrors, RegistrationFormProps } from "@/types";
 import { colors, gradients, shadows } from "@/config/theme";
-
-async function sendOtp(phone: string): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  console.log(`OTP sent to +91 ${phone}`);
-}
+import { normalizePhoneNumber, sendOtp } from "@/lib/api/auth";
+import { getApiErrorMessage } from "@/lib/api/http";
 
 function validate(data: RegistrationFormData): FormErrors {
   const errors: FormErrors = {};
@@ -24,7 +21,7 @@ function validate(data: RegistrationFormData): FormErrors {
 
   if (!data.phone.trim()) {
     errors.phone = "Phone number is required";
-  } else if (!/^\d{10}$/.test(data.phone.replace(/\D/g, ""))) {
+  } else if (!/^\d{10}$/.test(normalizePhoneNumber(data.phone))) {
     errors.phone = "Enter a valid 10-digit phone number";
   }
 
@@ -58,8 +55,17 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
 
     setLoading(true);
     try {
-      await sendOtp(form.phone);
-      onOtpSent(form.phone);
+      const payload = {
+        ...form,
+        phone: normalizePhoneNumber(form.phone),
+      };
+      await sendOtp({ phoneNumber: payload.phone });
+      onOtpSent(payload);
+    } catch (submitError) {
+      setErrors((prev) => ({
+        ...prev,
+        phone: getApiErrorMessage(submitError, "Unable to send OTP. Please try again."),
+      }));
     } finally {
       setLoading(false);
     }

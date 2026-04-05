@@ -3,23 +3,11 @@
 import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent, type ClipboardEvent } from "react";
 import type { OtpVerificationProps } from "@/types";
 import { colors, gradients, shadows, withAlpha } from "@/config/theme";
+import { resendOtp, verifyOtp } from "@/lib/api/auth";
+import { getApiErrorMessage } from "@/lib/api/http";
 
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 30;
-
-async function verifyOtp(phone: string, otp: string): Promise<{ isNewUser: boolean }> {
-  // Mock API call — replace with real API
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  console.log(`Verifying OTP ${otp} for +91 ${phone}`);
-  const lastDigit = Number(phone.at(-1) ?? 0);
-  return { isNewUser: lastDigit % 2 !== 0 };
-}
-
-async function resendOtp(phone: string): Promise<void> {
-  // Mock API call — replace with real API
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log(`OTP resent to +91 ${phone}`);
-}
 
 function maskPhone(phone: string): string {
   const digits = phone.replace(/\D/g, "");
@@ -96,10 +84,10 @@ export default function OtpVerification({ phoneNumber, otp, setOtp, onChangePhon
 
     setLoading(true);
     try {
-      const result = await verifyOtp(phoneNumber, code);
-      onVerified(result.isNewUser);
-    } catch {
-      setError("Verification failed. Please try again.");
+      const result = await verifyOtp({ phoneNumber, otp: code });
+      await onVerified(result);
+    } catch (submitError) {
+      setError(getApiErrorMessage(submitError, "Verification failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -114,11 +102,13 @@ export default function OtpVerification({ phoneNumber, otp, setOtp, onChangePhon
     if (resendTimer > 0 || resending) return;
     setResending(true);
     try {
-      await resendOtp(phoneNumber);
+      await resendOtp({ phoneNumber });
       setResendTimer(RESEND_COOLDOWN);
       setOtp(Array(OTP_LENGTH).fill(""));
       setError("");
       inputRefs.current[0]?.focus();
+    } catch (resendError) {
+      setError(getApiErrorMessage(resendError, "Unable to resend OTP. Please try again."));
     } finally {
       setResending(false);
     }

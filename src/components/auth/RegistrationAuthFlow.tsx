@@ -1,29 +1,50 @@
 "use client";
 
 import { useState } from "react";
-import type { AuthStep } from "@/types";
+import { useRouter } from "next/navigation";
+import type { AuthStep, RegistrationFormData, VerifyOtpResponse } from "@/types";
+import { completeProfile } from "@/lib/api/auth";
+import { saveAuthSession } from "@/lib/auth/session";
 import AuthHeader from "./AuthHeader";
 import RegistrationForm from "./RegistrationForm";
 import OtpVerification from "./OtpVerification";
 
 export default function RegistrationAuthFlow() {
+  const router = useRouter();
   const [step, setStep] = useState<AuthStep>("form");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
+  const [registrationData, setRegistrationData] = useState<RegistrationFormData | null>(null);
 
-  function handleOtpSent(phone: string) {
-    setPhoneNumber(phone);
+  function handleOtpSent(formData: RegistrationFormData) {
+    setPhoneNumber(formData.phone);
+    setRegistrationData(formData);
     setOtp(Array(6).fill(""));
     setStep("otp");
   }
 
   function handleChangePhone() {
     setOtp(Array(6).fill(""));
+    setRegistrationData(null);
     setStep("form");
   }
 
-  function handleVerified() {
-    setStep("form");
+  async function handleVerified(result: VerifyOtpResponse) {
+    if (result.isNewUser && registrationData) {
+      const profileResult = await completeProfile({
+        phoneNumber,
+        fullName: registrationData.fullName,
+        email: registrationData.email,
+        onboardingToken: result.onboardingToken,
+      });
+
+      saveAuthSession(profileResult.tokens, profileResult.user);
+      router.push(profileResult.redirectTo ?? "/");
+      return;
+    }
+
+    saveAuthSession(result.tokens, result.user);
+    router.push(result.redirectTo ?? "/");
   }
 
   return (
