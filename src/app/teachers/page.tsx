@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Teacher } from "@/types";
 import { getLatestTeachers } from "@/lib/api/teacher";
 import TeacherList, { TeacherCardSkeleton } from "@/components/teacher/TeacherList";
 
-export default function TeachersPage() {
+function TeachersContent() {
   const searchParams = useSearchParams();
   const keyword = searchParams.get("keyword") ?? "";
   const location = searchParams.get("location") ?? "";
@@ -160,5 +160,21 @@ export default function TeachersPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function TeachersPage() {
+  return (
+    <Suspense fallback={
+      <div className="px-2 sm:px-6 py-4 sm:py-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 gap-5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <TeacherCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    }>
+      <TeachersContent />
+    </Suspense>
   );
 }
