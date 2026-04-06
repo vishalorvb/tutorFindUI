@@ -92,7 +92,7 @@ export default function TeacherCard({ teacher }: { teacher: Teacher }) {
               ₹{fee}/mo
             </span>
             <Link
-              href={`/teachers/${slug}`}
+              href={`/teachers/${slug}-${teacher.id}`}
               className="px-4 py-1.5 rounded-lg text-sm font-semibold text-white transition hover:opacity-90"
               style={{ background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)" }}
             >

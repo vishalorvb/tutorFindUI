@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function BecomeATutor() {
   return (
@@ -54,14 +55,14 @@ export default function BecomeATutor() {
               ))}
             </ul>
 
-            <a href="#"
+            <Link href="/become-teacher"
               className="inline-flex items-center gap-2.5 font-black text-slate-900 px-8 py-4 rounded-2xl shadow-2xl transition-all duration-200 hover:scale-[1.03] text-base"
               style={{ background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f97316 100%)", boxShadow: "0 8px 32px rgba(245,158,11,0.4)" }}>
               Start Teaching Today
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </a>
+            </Link>
           </div>
 
           {/* Right: Teacher image + stats overlay */}

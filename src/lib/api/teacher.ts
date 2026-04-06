@@ -13,6 +13,18 @@ export async function getLatestTeachers(page: number = 1): Promise<Teacher[]> {
   return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
 }
 
+export async function getTeacherBySlug(slug: string): Promise<Teacher> {
+  const res = await fetch(buildUrl(`/teacher/getTeacherBySlug/${slug}`), {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Teacher not found: ${res.status}`);
+  }
+  const json = await res.json();
+  return json.data ?? json;
+}
+
 export async function createTeacher(data: TeacherFormData, jwt: string) {
   const formData = new FormData();
   formData.append("teacher_name", data.teacher_name);

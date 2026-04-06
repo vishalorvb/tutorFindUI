@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const steps = [
   {
@@ -127,13 +128,13 @@ export default function HowItWorks() {
 
         {/* CTA */}
         <div className="mt-14 text-center">
-          <a href="#" className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-2xl text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+          <Link href="/post-tuition" className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-2xl text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
             style={{ background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)", boxShadow: "0 8px 32px rgba(124,58,237,0.35)" }}>
             Post Your Requirement
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
-          </a>
+          </Link>
         </div>
       </div>
     </section>

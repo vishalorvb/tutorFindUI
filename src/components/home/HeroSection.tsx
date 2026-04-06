@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const SUBJECTS = [
   "Mathematics", "Physics", "Chemistry", "Biology", "English",
@@ -11,6 +13,15 @@ const SUBJECTS = [
 export default function HeroSection() {
   const [subject, setSubject] = useState("");
   const [location, setLocation] = useState("");
+  const router = useRouter();
+
+  function handleSearch() {
+    const parts = [subject, location].filter(Boolean);
+    const keyword = parts.join(" ");
+    const params = new URLSearchParams();
+    if (keyword) params.set("keyword", keyword);
+    router.push(`/tuition${params.toString() ? `?${params}` : ""}`);
+  }
 
   return (
     <section className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0f0c29 0%, #1a1060 40%, #24243e 100%)" }}>
@@ -70,7 +81,7 @@ export default function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
-              <a href="#subjects"
+              <Link href="/teachers"
                 className="relative inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-2xl text-white overflow-hidden group shadow-2xl shadow-violet-900/50 transition-all duration-300 hover:scale-105"
                 style={{ background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #6d28d9 100%)" }}>
                 <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-2xl" />
@@ -78,14 +89,14 @@ export default function HeroSection() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <span className="relative z-10">Find a Tutor</span>
-              </a>
-              <a href="#become-tutor"
+              </Link>
+              <Link href="/become-teacher"
                 className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-2xl text-white border border-white/25 hover:border-white/50 hover:bg-white/10 transition-all duration-300">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 Become a Tutor
-              </a>
+              </Link>
             </div>
 
             {/* Search Bar */}
@@ -124,7 +135,7 @@ export default function HeroSection() {
                 </div>
 
                 {/* Search button */}
-                <button className="font-bold px-7 py-3.5 rounded-xl text-sm whitespace-nowrap flex items-center gap-2 justify-center shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-amber-400/30"
+                <button onClick={handleSearch} className="font-bold px-7 py-3.5 rounded-xl text-sm whitespace-nowrap flex items-center gap-2 justify-center shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-amber-400/30"
                   style={{ background: "linear-gradient(135deg, #f59e0b 0%, #f97316 100%)", color: "#0f172a" }}>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -138,7 +149,7 @@ export default function HeroSection() {
             <div className="mt-5 flex flex-wrap gap-2 justify-center lg:justify-start items-center">
               <span className="text-xs text-white/40 font-medium">Popular:</span>
               {["Math Tutor", "Physics", "English", "IIT-JEE", "NEET"].map((tag) => (
-                <button key={tag} onClick={() => setSubject(tag)}
+                <button key={tag} onClick={() => { setSubject(tag); router.push(`/tuition?keyword=${encodeURIComponent(tag)}`); }}
                   className="text-xs text-white/70 hover:text-white border border-white/20 hover:border-white/50 hover:bg-white/10 px-3 py-1.5 rounded-full transition-all duration-200">
                   {tag}
                 </button>

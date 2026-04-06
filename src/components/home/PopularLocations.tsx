@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 const cities = [
   { name: "Hyderabad", tutors: "450+", icon: "🏙️", gradient: "linear-gradient(135deg, #6366f1, #8b5cf6)" },
@@ -39,7 +40,7 @@ export default function PopularLocations() {
         {/* City grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
           {cities.map((city, i) => (
-            <a key={i} href="#"
+            <Link key={i} href={`/tuition/${city.name.toLowerCase().replace(/\s+/g, "-")}`}
               className="group relative flex flex-col items-center text-center p-5 bg-white border border-slate-100 rounded-2xl hover:border-transparent overflow-hidden transition-all duration-300 hover:-translate-y-1"
               style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}
               onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 16px 40px rgba(99,102,241,0.15)")}
@@ -63,7 +64,7 @@ export default function PopularLocations() {
                 style={{ background: city.gradient, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                 {city.tutors} tutors
               </p>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function FloatingCTA() {
   const [visible, setVisible] = useState(false);
@@ -34,8 +35,8 @@ export default function FloatingCTA() {
       </a>
 
       {/* Post Requirement Button */}
-      <a
-        href="#"
+      <Link
+        href="/post-tuition"
         className="flex items-center gap-2 text-slate-900 font-black text-sm px-4 py-3 rounded-full transition-all duration-200 hover:scale-105 whitespace-nowrap"
         style={{ background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f97316 100%)", boxShadow: "0 6px 24px rgba(245,158,11,0.5)" }}
       >
@@ -43,7 +44,7 @@ export default function FloatingCTA() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
         </svg>
         Post Requirement
-      </a>
+      </Link>
     </div>
   );
 }
