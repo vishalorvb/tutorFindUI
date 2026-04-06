@@ -213,3 +213,24 @@ export interface TeacherStepTwoProps {
   onSubmit: () => void;
   loading: boolean;
 }
+
+// ─── Teacher Listing Types ───
+
+export interface Teacher {
+  id: number;
+  name: string;
+  phone_number: string;
+  gender: string;
+  experience: number;
+  location: string;
+  qualification: string;
+  subject: string;
+  classes: string;
+  about: string;
+  teaching_mode: string;
+  pincode: number;
+  age: number;
+  fee: string;
+  photo: string | null;
+  slug: string;
+}

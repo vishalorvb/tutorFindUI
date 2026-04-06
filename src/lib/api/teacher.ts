@@ -1,5 +1,17 @@
 import { buildUrl } from "./http";
-import type { TeacherFormData } from "@/types";
+import type { TeacherFormData, Teacher } from "@/types";
+
+// ─── Fetch latest teachers (paginated) ───
+
+export async function getLatestTeachers(page: number = 1): Promise<Teacher[]> {
+  const res = await fetch(buildUrl(`/teacher/latestTeacher/${page}`));
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Failed to fetch teachers: ${res.status}`);
+  }
+  const json = await res.json();
+  return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
+}
 
 export async function createTeacher(data: TeacherFormData, jwt: string) {
   const formData = new FormData();
