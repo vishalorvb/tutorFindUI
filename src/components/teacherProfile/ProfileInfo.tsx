@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Teacher } from "@/types";
 
 function InfoRow({
@@ -5,7 +6,7 @@ function InfoRow({
   label,
   value,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string;
 }) {
