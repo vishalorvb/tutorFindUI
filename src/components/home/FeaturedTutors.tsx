@@ -93,7 +93,7 @@ export default function FeaturedTutors() {
                   {/* Avatar — overlaps banner */}
                   <div
                     className="absolute -bottom-7 left-5 w-14 h-14 rounded-2xl overflow-hidden border-2 border-white ring-2"
-                    style={{ ringColor: glow, boxShadow: `0 4px 20px ${glow}` }}
+                    style={{ boxShadow: `0 4px 20px ${glow}` }}
                   >
                     {tutor.photo ? (
                       <Image src={tutor.photo} alt={tutor.name} width={56} height={56} className="w-full h-full object-cover" />
