@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getTuitionBySlug } from "@/lib/api/tuition";
 import DetailLayout from "@/components/tuitionDetail/DetailLayout";
@@ -10,7 +10,12 @@ import ContactCard from "@/components/tuitionDetail/ContactCard";
 import MobileCTA from "@/components/tuitionDetail/MobileCTA";
 import FAQSection from "@/components/tuitionDetail/FAQSection";
 
+function isValidSlug(slug: string) {
+  return /-\d+$/.test(slug);
+}
+
 async function fetchTuition(slug: string) {
+  if (!isValidSlug(slug)) return null;
   try {
     return await getTuitionBySlug(slug);
   } catch {
@@ -25,6 +30,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  if (!isValidSlug(slug)) {
+    const query = slug.replace(/[-_]+/g, " ").trim();
+    return { title: `Search: ${query} | Home Tuition` };
+  }
   const tuition = await fetchTuition(slug);
   if (!tuition) return { title: "Tuition Not Found" };
 
@@ -46,6 +55,13 @@ export default async function TuitionDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
+  // If slug doesn't match a valid tuition pattern, use it as a search query
+  if (!isValidSlug(slug)) {
+    const query = slug.replace(/[-_]+/g, " ").trim();
+    redirect(`/tuition?keyword=${encodeURIComponent(query)}`);
+  }
+
   const tuition = await fetchTuition(slug);
   if (!tuition) notFound();
 

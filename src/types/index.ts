@@ -181,3 +181,35 @@ export interface StepTwoFormProps {
   onBack: () => void;
   onSubmit: () => void;
 }
+
+// ─── Teacher Onboarding Types ───
+
+export interface TeacherFormData {
+  teacher_name: string;
+  gender: string;
+  age: string;
+  subject: string[];
+  classes: string[];
+  mode: string;
+  experience: string;
+  qualification: string;
+  about: string;
+  fee: string;
+  location: string;
+  pincode: string;
+  photo: File | null;
+}
+
+export interface TeacherStepOneProps {
+  formData: TeacherFormData;
+  onChange: (field: keyof TeacherFormData, value: string | string[]) => void;
+  onNext: () => void;
+}
+
+export interface TeacherStepTwoProps {
+  formData: TeacherFormData;
+  onChange: (field: keyof TeacherFormData, value: string | File | null) => void;
+  onBack: () => void;
+  onSubmit: () => void;
+  loading: boolean;
+}

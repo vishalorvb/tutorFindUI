@@ -76,7 +76,7 @@ export default function Navbar() {
               { label: "Post Tuition", href: "/post-tuition" },
               { label: "Find Tuition", href: "/tuition" },
               { label: "Find Tutors", href: "#tutors" },
-              { label: "Locations", href: "#locations" },
+              { label: "Become a Tutor", href: "/become-teacher" },
             ].map((item) => (
               item.href.startsWith("/") ? (
                 <Link
@@ -162,7 +162,7 @@ export default function Navbar() {
               { label: "Post Tuition", href: "/post-tuition" },
               { label: "Find Tuition", href: "/tuition" },
               { label: "Find Tutors", href: "#tutors" },
-              { label: "Locations", href: "#locations" },
+              { label: "Become a Tutor", href: "/become-teacher" },
             ].map((item) => (
               item.href.startsWith("/") ? (
                 <Link

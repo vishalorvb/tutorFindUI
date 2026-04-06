@@ -199,7 +199,7 @@ export default function FilterSidebar({ filters, onFilterChange }: FilterSidebar
           {cities.map((c) => (
             <Link
               key={c}
-              href={`/tuition?city=${encodeURIComponent(c)}`}
+              href={`/tuition/${encodeURIComponent(c)}`}
               className="flex items-center gap-1.5 text-[13px] font-medium py-1 px-2 rounded-md hover:bg-violet-50 transition-colors"
               style={{ color: colors.primary }}
             >
