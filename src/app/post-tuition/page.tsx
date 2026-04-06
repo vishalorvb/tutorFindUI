@@ -7,6 +7,8 @@ import Stepper from "@/components/postTuition/Stepper";
 import StepOneForm from "@/components/postTuition/StepOneForm";
 import StepTwoForm from "@/components/postTuition/StepTwoForm";
 import BenefitsPanel from "@/components/postTuition/BenefitsPanel";
+import { createTuition } from "@/lib/api/tuition";
+import { getJwt } from "@/lib/auth/session";
 
 const INITIAL_DATA: PostTuitionFormData = {
   subject: "",
@@ -25,14 +27,37 @@ export default function PostTuitionPage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<PostTuitionFormData>(INITIAL_DATA);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function handleChange(field: keyof PostTuitionFormData, value: string | File | null) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleSubmit() {
-    // TODO: wire to API
-    setSubmitted(true);
+
+  async function handleSubmit() {
+    setError(null);
+    try {
+      const jwt = getJwt();
+      if (!jwt) {
+        setError("You must be logged in to post a tuition requirement.");
+        return;
+      }
+      await createTuition({
+        student_name: formData.studentName,
+        student_phone_number: formData.phone,
+        course: formData.course,
+        subject: formData.subject,
+        description: formData.description,
+        fee: formData.fee,
+        mode: formData.teachingMode,
+        pincode: formData.pincode,
+        locality: formData.locality,
+        photo: formData.photo,
+      }, jwt);
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err?.message || "Failed to post tuition requirement.");
+    }
   }
 
   if (submitted) {
@@ -85,6 +110,12 @@ export default function PostTuitionPage() {
         <div>
           <div className="bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-lg sm:shadow-slate-200/70 border-0 sm:border sm:border-slate-100 -mx-4 sm:mx-0 px-4 sm:px-8 py-6 sm:py-8">
             <Stepper currentStep={step} />
+
+            {error && (
+              <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold">
+                {error}
+              </div>
+            )}
 
             {step === 1 && (
               <StepOneForm

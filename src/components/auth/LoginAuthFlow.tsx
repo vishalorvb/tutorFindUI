@@ -35,7 +35,20 @@ export default function LoginAuthFlow() {
         username: phoneNumber,
         password: otpCode,
       });
-      saveJwt(result.access_token);
+      if (process.env.NODE_ENV !== "production") {
+        // eslint-disable-next-line no-console
+        console.log("[Login] API response:", result);
+      }
+      // The JWT is in result.data.access
+      const jwt = result?.data?.access;
+      if (!jwt) {
+        showToast("Login failed: No access token returned.", "error");
+        throw new Error("No access token in login response");
+      }
+      saveJwt(jwt);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("tutorfind:auth"));
+      }
       showToast("Login successful!", "success");
       router.push("/");
     } catch (err) {
