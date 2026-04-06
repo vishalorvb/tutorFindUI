@@ -173,7 +173,7 @@ export const mockTuitions: Tuition[] = [
   },
 ];
 
-export const subjects = [
+export const subjects: string[] = [
   "Mathematics",
   "Physics",
   "Chemistry",
@@ -184,7 +184,7 @@ export const subjects = [
   "Accountancy",
 ];
 
-export const courses = [
+export const courses: string[] = [
   "Class 6",
   "Class 8",
   "Class 9",
@@ -195,7 +195,30 @@ export const courses = [
   "IIT JEE",
 ];
 
-export const popularCities = [
+export const cities: string[] = [
+  "Delhi",
+  "Mumbai",
+  "Bangalore",
+  "Hyderabad",
+  "Chennai",
+  "Kolkata",
+  "Pune",
+  "Ahmedabad",
+  "Jaipur",
+  "Lucknow",
+  "Kota",
+  "Noida",
+  "Gurgaon",
+  "Chandigarh",
+  "Patna",
+  "Bhopal",
+  "Indore",
+  "Nagpur",
+  "Surat",
+  "Howrah",
+];
+
+export const popularCities: { label: string; href: string }[] = [
   { label: "Math Tutor in Hyderabad", href: "/tuition/math-hyderabad" },
   { label: "Home Tuition in Delhi", href: "/tuition/delhi" },
   { label: "Physics Tutor in Bangalore", href: "/tuition/physics-bangalore" },

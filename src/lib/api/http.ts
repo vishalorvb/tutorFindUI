@@ -11,7 +11,7 @@ interface ApiRequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
 
 export class ApiClientError extends Error {
   status: number;
@@ -25,7 +25,7 @@ export class ApiClientError extends Error {
   }
 }
 
-function buildUrl(path: string): string {
+export function buildUrl(path: string): string {
   if (/^https?:\/\//.test(path)) {
     return path;
   }

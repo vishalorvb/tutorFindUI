@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import type { TuitionFilters } from "@/types";
-import { mockTuitions } from "@/data/mockTuitions";
-import TuitionLayout from "@/components/tuition/TuitionLayout";
-import TopBar from "@/components/tuition/TopBar";
+import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import type { Tuition, TuitionFilters } from "@/types";
+import { getLatestTuitions, searchTuitions } from "@/lib/api/tuition";
+import SearchBar from "@/components/tuition/SearchBar";
+import FilterChips from "@/components/tuition/FilterChips";
 import FilterSidebar from "@/components/tuition/FilterSidebar";
 import TuitionList from "@/components/tuition/TuitionList";
+import TopInfoBar from "@/components/tuition/TopInfoBar";
 
 const defaultFilters: TuitionFilters = {
   search: "",
@@ -15,45 +17,61 @@ const defaultFilters: TuitionFilters = {
   course: "",
   teachingMode: "",
   sortBy: "latest",
+  feeMin: "",
+  feeMax: "",
 };
 
 export default function TuitionPage() {
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get("keyword") ?? "";
+  const city = searchParams.get("city") ?? "";
+  const isSearchMode = keyword.length > 0;
+
+  const [tuitions, setTuitions] = useState<Tuition[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [filters, setFilters] = useState<TuitionFilters>(defaultFilters);
 
-  function handleFilterChange(updates: Partial<TuitionFilters>) {
-    setFilters((prev) => ({ ...prev, ...updates }));
-  }
-
-  const filtered = useMemo(() => {
-    let result = [...mockTuitions];
-
-    if (filters.search) {
-      const q = filters.search.toLowerCase();
-      result = result.filter(
-        (t) =>
-          t.subject.toLowerCase().includes(q) ||
-          t.course.toLowerCase().includes(q) ||
-          (t.description?.toLowerCase().includes(q) ?? false)
-      );
+  const fetchTuitions = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      let data: Tuition[];
+      if (isSearchMode) {
+        data = await searchTuitions(1, keyword);
+      } else {
+        data = await getLatestTuitions(1);
+      }
+      setTuitions(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("[TuitionPage] fetch error:", err);
+      setError("Something went wrong. Please try again.");
+      setTuitions([]);
+    } finally {
+      setLoading(false);
     }
+  }, [isSearchMode, keyword]);
 
-    if (filters.location) {
-      const loc = filters.location.toLowerCase();
-      result = result.filter(
-        (t) =>
-          (t.locality?.toLowerCase().includes(loc) ?? false) ||
-          (t.pincode?.includes(loc) ?? false)
-      );
-    }
+  useEffect(() => {
+    fetchTuitions();
+  }, [fetchTuitions]);
+
+  // Client-side filtering on top of API results
+  const filtered = (() => {
+    let result = [...tuitions];
 
     if (filters.subject) {
       result = result.filter((t) => t.subject === filters.subject);
     }
-
     if (filters.course) {
       result = result.filter((t) => t.course === filters.course);
     }
-
+    if (filters.feeMin) {
+      result = result.filter((t) => Number(t.fee ?? 0) >= Number(filters.feeMin));
+    }
+    if (filters.feeMax) {
+      result = result.filter((t) => Number(t.fee ?? 0) <= Number(filters.feeMax));
+    }
     if (filters.teachingMode) {
       result = result.filter((t) => t.teaching_mode === filters.teachingMode);
     }
@@ -64,19 +82,60 @@ export default function TuitionPage() {
           new Date(b.posted_date).getTime() - new Date(a.posted_date).getTime()
       );
     } else {
-      result.sort((a, b) => (b.fee ?? 0) - (a.fee ?? 0));
+      result.sort((a, b) => Number(b.fee ?? 0) - Number(a.fee ?? 0));
     }
 
     return result;
-  }, [filters]);
+  })();
+
+  function handleFilterChange(updates: Partial<TuitionFilters>) {
+    setFilters((prev) => ({ ...prev, ...updates }));
+  }
 
   return (
-    <TuitionLayout>
-      <TopBar filters={filters} onFilterChange={handleFilterChange} />
-      <div className="flex flex-col lg:flex-row">
-        <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
-        <TuitionList tuitions={filtered} />
+    <div className="px-2 sm:px-6 py-4 sm:py-8 max-w-7xl mx-auto">
+      {/* Search Section */}
+      <SearchBar />
+      <FilterChips filters={filters} onFilterChange={handleFilterChange} />
+
+      <div className="flex flex-col lg:flex-row gap-6 mt-6">
+        {/* Filter Sidebar */}
+        <div className="w-full lg:w-64 flex-shrink-0 mb-4 lg:mb-0">
+          <div className="lg:sticky lg:top-20">
+            <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
+          </div>
+        </div>
+
+        {/* Results Section */}
+        <div className="flex-1 min-w-0">
+          <TopInfoBar
+            count={filtered.length}
+            filters={filters}
+            onSortChange={(sortBy: string) => handleFilterChange({ sortBy: sortBy as "latest" | "fee-high-low" })}
+            keyword={keyword}
+            city={city}
+            isSearchMode={isSearchMode}
+          />
+
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-600" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+              <p className="text-red-500 font-medium mb-2">{error}</p>
+              <button
+                onClick={fetchTuitions}
+                className="text-violet-600 hover:text-violet-700 font-semibold text-sm"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : (
+            <TuitionList tuitions={filtered} keyword={keyword} />
+          )}
+        </div>
       </div>
-    </TuitionLayout>
+    </div>
   );
 }

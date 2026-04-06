@@ -50,6 +50,10 @@ export interface LoginPayload {
 export interface LoginResponse {
   access_token: string;
   token_type?: string;
+  data?: {
+    access?: string;
+    [key: string]: unknown;
+  };
   [key: string]: unknown;
 }
 
@@ -93,6 +97,17 @@ export interface PhoneInputFormProps {
   onOtpSent: (phone: string) => void;
 }
 
+export interface NewUserFormData {
+  fullName: string;
+  email: string;
+}
+
+export interface NewUserFormProps {
+  phoneNumber: string;
+  onboardingToken?: string;
+  onCompleted: (result: CompleteProfileResponse) => void | Promise<void>;
+}
+
 // ─── Tuition Types ───
 
 export type TeachingMode = "online" | "home";
@@ -103,15 +118,27 @@ export interface Tuition {
   course: string;
   description?: string;
   teaching_mode: TeachingMode;
-  fee?: number;
+  fee?: number | string;
   locality?: string;
   city?: string;
-  pincode?: string;
+  pincode?: number | string;
   posted_date: string;
   verify: boolean;
   slug: string;
   photo?: string;
   unlocks: number;
+  student_name?: string;
+  phone_number?: string;
+  pincode_info?: {
+    Pincode?: number;
+    Devision?: string;
+    Region?: string;
+    Circle?: string;
+    Taluk?: string;
+    District?: string;
+    State?: string;
+  };
+  status?: boolean;
 }
 
 export interface TuitionFilters {
@@ -121,6 +148,8 @@ export interface TuitionFilters {
   course: string;
   teachingMode: TeachingMode | "";
   sortBy: "latest" | "fee-high-low";
+  feeMin?: string;
+  feeMax?: string;
 }
 
 // ─── Post Tuition Types ───

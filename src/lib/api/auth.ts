@@ -11,13 +11,11 @@ import type {
 import { apiRequest } from "./http";
 
 const AUTH_ENDPOINTS = {
-  sendOtp: process.env.NEXT_PUBLIC_SEND_OTP_API_URL ?? "http://127.0.0.1:8000/usermanager/sendOtp",
-  resendOtp: process.env.NEXT_PUBLIC_RESEND_OTP_API_URL ?? "http://127.0.0.1:8000/usermanager/sendOtp",
-  login: process.env.NEXT_PUBLIC_LOGIN_API_URL ?? "http://127.0.0.1:8000/usermanager/login",
+  sendOtp: process.env.NEXT_PUBLIC_SEND_OTP_API_URL ?? "/usermanager/sendOtp",
+  resendOtp: process.env.NEXT_PUBLIC_RESEND_OTP_API_URL ?? "/usermanager/sendOtp",
+  login: process.env.NEXT_PUBLIC_LOGIN_API_URL ?? "/usermanager/login",
   verifyOtp: process.env.NEXT_PUBLIC_VERIFY_OTP_API_URL ?? "/auth/verify-otp",
-  completeProfile:
-    process.env.NEXT_PUBLIC_COMPLETE_PROFILE_API_URL ??
-    "http://127.0.0.1:8000/usermanager/createUser",
+  completeProfile: process.env.NEXT_PUBLIC_COMPLETE_PROFILE_API_URL ?? "/usermanager/createUser",
 } as const;
 
 export function normalizePhoneNumber(phoneNumber: string): string {

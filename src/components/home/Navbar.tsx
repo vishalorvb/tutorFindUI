@@ -74,7 +74,7 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center gap-1 text-sm font-medium">
             {[
               { label: "Post Tuition", href: "/post-tuition" },
-              { label: "Subjects", href: "#subjects" },
+              { label: "Find Tuition", href: "/tuition" },
               { label: "Find Tutors", href: "#tutors" },
               { label: "Locations", href: "#locations" },
             ].map((item) => (
@@ -160,7 +160,7 @@ export default function Navbar() {
           <div className="md:hidden border-t border-slate-100 py-4 space-y-1 bg-white/98 rounded-b-2xl shadow-xl">
             {[
               { label: "Post Tuition", href: "/post-tuition" },
-              { label: "Subjects", href: "#subjects" },
+              { label: "Find Tuition", href: "/tuition" },
               { label: "Find Tutors", href: "#tutors" },
               { label: "Locations", href: "#locations" },
             ].map((item) => (

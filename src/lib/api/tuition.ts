@@ -1,4 +1,49 @@
-import { apiRequest } from "./http";
+import { buildUrl } from "./http";
+import type { Tuition } from "@/types";
+
+// ─── Fetch latest tuitions (paginated) ───
+
+export async function getLatestTuitions(page: number = 1): Promise<Tuition[]> {
+  const res = await fetch(buildUrl(`/tuition/getLatesttuition/${page}`));
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Failed to fetch latest tuitions: ${res.status}`);
+  }
+  const json = await res.json();
+  return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
+}
+
+// ─── Search tuitions (paginated) ───
+
+export async function searchTuitions(page: number = 1, query: string): Promise<Tuition[]> {
+  const encoded = encodeURIComponent(query);
+  const res = await fetch(buildUrl(`/tuition/search/${page}/`) + `?query=${encoded}`);
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Failed to search tuitions: ${res.status}`);
+  }
+  const json = await res.json();
+  return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
+}
+
+// ─── Get tuition by slug (extracts ID from end of slug) ───
+
+export async function getTuitionBySlug(slug: string): Promise<Tuition> {
+  const match = slug.match(/-(\d+)$/);
+  if (!match) {
+    throw new Error("Invalid tuition slug");
+  }
+  const id = match[1];
+  const res = await fetch(buildUrl(`/tuition/getTuitionByid/${id}`));
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Failed to fetch tuition: ${res.status}`);
+  }
+  const json = await res.json();
+  return json.data ?? json;
+}
+
+// ─── Create tuition ───
 
 export interface CreateTuitionPayload {
   student_name: string;
@@ -32,7 +77,7 @@ export async function createTuition(payload: CreateTuitionPayload, jwt: string):
     console.log("[createTuition] JWT:", jwt);
   }
 
-  const res = await fetch("http://localhost:8000/tuition/createTuition", {
+  const res = await fetch(buildUrl("/tuition/createTuition"), {
     method: "POST",
     headers: {
       Authorization: `Bearer ${jwt}`,

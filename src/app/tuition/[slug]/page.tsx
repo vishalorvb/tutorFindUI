@@ -1,30 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { mockTuitions } from "@/data/mockTuitions";
+import { getTuitionBySlug } from "@/lib/api/tuition";
 import DetailLayout from "@/components/tuitionDetail/DetailLayout";
 import TuitionHeader from "@/components/tuitionDetail/TuitionHeader";
 import TuitionInfo from "@/components/tuitionDetail/TuitionInfo";
 import TuitionDescription from "@/components/tuitionDetail/TuitionDescription";
 import ContactCard from "@/components/tuitionDetail/ContactCard";
 import MobileCTA from "@/components/tuitionDetail/MobileCTA";
-import SimilarTuitions from "@/components/tuitionDetail/SimilarTuitions";
 import FAQSection from "@/components/tuitionDetail/FAQSection";
 
-function getTuition(slug: string) {
-  return mockTuitions.find((t) => t.slug === slug);
-}
-
-function getSimilarTuitions(slug: string) {
-  const tuition = getTuition(slug);
-  if (!tuition) return [];
-  return mockTuitions
-    .filter(
-      (t) =>
-        t.slug !== slug &&
-        (t.subject === tuition.subject || t.city === tuition.city)
-    )
-    .slice(0, 4);
+async function fetchTuition(slug: string) {
+  try {
+    return await getTuitionBySlug(slug);
+  } catch {
+    return null;
+  }
 }
 
 // ─── Dynamic SEO Metadata ───
@@ -34,7 +25,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const tuition = getTuition(slug);
+  const tuition = await fetchTuition(slug);
   if (!tuition) return { title: "Tuition Not Found" };
 
   const city = tuition.city || tuition.locality || "";
@@ -48,11 +39,6 @@ export async function generateMetadata({
   };
 }
 
-// ─── Static params for build-time generation ───
-export function generateStaticParams() {
-  return mockTuitions.map((t) => ({ slug: t.slug }));
-}
-
 // ─── Page ───
 export default async function TuitionDetailPage({
   params,
@@ -60,10 +46,9 @@ export default async function TuitionDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const tuition = getTuition(slug);
+  const tuition = await fetchTuition(slug);
   if (!tuition) notFound();
 
-  const similar = getSimilarTuitions(slug);
   const city = tuition.city || tuition.locality || "";
 
   // JSON-LD: JobPosting schema
@@ -135,11 +120,6 @@ export default async function TuitionDetailPage({
           {/* FAQ */}
           <div className="lg:col-span-2 order-3 lg:order-none">
             <FAQSection tuition={tuition} />
-          </div>
-
-          {/* Similar */}
-          <div className="lg:col-span-2 order-4 lg:order-none">
-            <SimilarTuitions tuitions={similar} />
           </div>
         </div>
 
