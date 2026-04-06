@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 const footerLinks = {
   company: [
@@ -44,7 +45,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <a href="/" className="flex items-center gap-2 mb-4">
+            <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}>
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,7 +56,7 @@ export default function Footer() {
                 <span className="text-white">Tutor</span>
                 <span style={{ background: "linear-gradient(90deg, #a78bfa, #f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Find</span>
               </span>
-            </a>
+            </Link>
             <p className="text-sm leading-relaxed mb-5" style={{ color: "rgba(196,181,253,0.65)" }}>
               Connecting students with the best home and online tutors across India.
             </p>

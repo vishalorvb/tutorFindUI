@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { mockTuitions } from "@/data/mockTuitions";
 import DetailLayout from "@/components/tuitionDetail/DetailLayout";
 import TuitionHeader from "@/components/tuitionDetail/TuitionHeader";
@@ -107,7 +108,7 @@ export default async function TuitionDetailPage({
       <DetailLayout>
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500">
-          <a href="/tuition" className="hover:text-violet-600 transition-colors font-medium">Tuitions</a>
+          <Link href="/tuition" className="hover:text-violet-600 transition-colors font-medium">Tuitions</Link>
           <svg className="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>

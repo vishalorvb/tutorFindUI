@@ -122,3 +122,33 @@ export interface TuitionFilters {
   teachingMode: TeachingMode | "";
   sortBy: "latest" | "fee-high-low";
 }
+
+// ─── Post Tuition Types ───
+
+export interface PostTuitionFormData {
+  // Step 1
+  subject: string;
+  course: string;
+  teachingMode: TeachingMode | "both" | "";
+  // Step 2
+  description: string;
+  fee: string;
+  locality: string;
+  pincode: string;
+  studentName: string;
+  phone: string;
+  photo: File | null;
+}
+
+export interface StepOneFormProps {
+  formData: PostTuitionFormData;
+  onChange: (field: keyof PostTuitionFormData, value: string) => void;
+  onNext: () => void;
+}
+
+export interface StepTwoFormProps {
+  formData: PostTuitionFormData;
+  onChange: (field: keyof PostTuitionFormData, value: string | File | null) => void;
+  onBack: () => void;
+  onSubmit: () => void;
+}
