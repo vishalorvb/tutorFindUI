@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Tuition, TuitionFilters } from "@/types";
 import { getLatestTuitions, searchTuitions } from "@/lib/api/tuition";
@@ -22,6 +22,18 @@ const defaultFilters: TuitionFilters = {
 };
 
 export default function TuitionPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-600" />
+      </div>
+    }>
+      <TuitionContent />
+    </Suspense>
+  );
+}
+
+function TuitionContent() {
   const searchParams = useSearchParams();
   const keyword = searchParams.get("keyword") ?? "";
   const city = searchParams.get("city") ?? "";
