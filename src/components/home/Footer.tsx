@@ -201,7 +201,7 @@ export default function Footer() {
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs" style={{ color: "rgba(196,181,253,0.35)" }}>
-            © {new Date().getFullYear()} TutorFind. All rights reserved.
+            © {new Date().getFullYear()} HomeTutorly. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             {["Privacy", "Terms", "Cookies"].map((label) => (

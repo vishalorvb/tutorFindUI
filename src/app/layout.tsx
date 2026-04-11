@@ -18,15 +18,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TutorFind — Find the Best Home & Online Tutors Near You",
+  title: "HomeTutorly — Find the Best Home & Online Tutors Near You",
   description:
     "Connect with 2,000+ verified home tutors and online tutors across India. Post your requirement, get matched instantly, and book a free demo class. Subjects: Math, Physics, Chemistry, English, Coding and more.",
   keywords:
     "home tutor, online tutor, tutor near me, find tutor, mathematics tutor, physics tutor, NEET tutor, IIT JEE tutor, tutor in Hyderabad, tutor in Delhi, tutor in Bangalore",
   openGraph: {
-    title: "TutorFind — Find the Best Home & Online Tutors Near You",
+    title: "HomeTutorly — Find the Best Home & Online Tutors Near You",
     description:
-      "Connect with verified tutors. Book a free demo class. 10,000+ students trust TutorFind.",
+      "Connect with verified tutors. Book a free demo class. 10,000+ students trust HomeTutorly.",
     type: "website",
   },
 };

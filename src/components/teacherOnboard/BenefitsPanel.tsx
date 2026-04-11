@@ -13,7 +13,7 @@ export default function BenefitsPanel() {
     <div className="bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl p-6 sm:p-8 text-white sticky top-24">
       <h3 className="text-lg font-bold mb-1">Start Getting Students Near You</h3>
       <p className="text-violet-200 text-sm mb-6">
-        Join 2,000+ tutors already growing their teaching career on TutorFind.
+        Join 2,000+ tutors already growing their teaching career on HomeTutorly.
       </p>
 
       <ul className="space-y-4 mb-8">

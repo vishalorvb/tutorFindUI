@@ -18,7 +18,7 @@ function buildFAQs(tuition: Tuition): FAQ[] {
     {
       question: "Is this tuition verified?",
       answer: tuition.verify
-        ? "Yes, this tuition requirement has been verified by the TutorFind team. The student details and requirements have been confirmed."
+        ? "Yes, this tuition requirement has been verified by the HomeTutorly team. The student details and requirements have been confirmed."
         : "This tuition requirement has not been verified yet. We recommend confirming details directly with the student before starting.",
     },
     {

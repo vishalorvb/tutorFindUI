@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { LoginStep, LoginResponse } from "@/types";
 import { login } from "@/lib/api/auth";
 import { saveJwt } from "@/lib/auth/session";
@@ -13,6 +13,7 @@ import PhoneInputForm from "./PhoneInputForm";
 
 export default function LoginAuthFlow() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { showToast } = useToast();
   const [step, setStep] = useState<LoginStep>("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -47,10 +48,11 @@ export default function LoginAuthFlow() {
       }
       saveJwt(jwt);
       if (typeof window !== "undefined") {
-        window.dispatchEvent(new Event("tutorfind:auth"));
+        window.dispatchEvent(new Event("hometutorly:auth"));
       }
       showToast("Login successful!", "success");
-      router.push("/");
+      const redirect = searchParams.get("redirect") || "/";
+      router.push(redirect);
     } catch (err) {
       const msg = getApiErrorMessage(err, "Login failed. Please try again.");
       showToast(msg);

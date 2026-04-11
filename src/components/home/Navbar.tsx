@@ -21,7 +21,7 @@ export default function Navbar() {
   useEffect(() => {
     function updateLoginState(e?: Event) {
       // If event is present, optimistically update based on event type
-      if (e?.type === "tutorfind:auth") {
+      if (e?.type === "hometutorly:auth") {
         // If JWT exists, treat as login; else, treat as logout
         const hasJwt = !!getJwt();
         setIsLoggedIn(hasJwt);
@@ -31,17 +31,17 @@ export default function Navbar() {
     }
     updateLoginState();
     window.addEventListener("storage", updateLoginState);
-    window.addEventListener("tutorfind:auth", updateLoginState);
+    window.addEventListener("hometutorly:auth", updateLoginState);
     return () => {
       window.removeEventListener("storage", updateLoginState);
-      window.removeEventListener("tutorfind:auth", updateLoginState);
+      window.removeEventListener("hometutorly:auth", updateLoginState);
     };
   }, []);
 
   function handleLogout() {
     clearAuthSession();
     setIsLoggedIn(false);
-    window.dispatchEvent(new Event("tutorfind:auth"));
+    window.dispatchEvent(new Event("hometutorly:auth"));
     router.push("/login");
   }
 
@@ -66,7 +66,7 @@ export default function Navbar() {
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-white shadow-sm" />
             </div>
             <span className="text-xl font-black text-slate-900 tracking-tight">
-              Tutor<span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Find</span>
+              Home<span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Tutorly</span>
             </span>
           </Link>
 

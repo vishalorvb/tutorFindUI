@@ -1,8 +1,8 @@
 import type { AuthTokens, AuthUser } from "@/types";
 
-const AUTH_SESSION_KEY = "tutorfind.auth.session";
-const JWT_COOKIE_NAME = "tutorfind.jwt";
-const JWT_EXPIRY_MINUTES = 30;
+const AUTH_SESSION_KEY = "hometutorly.auth.session";
+const JWT_COOKIE_NAME = "hometutorly.jwt";
+const JWT_EXPIRY_MINUTES = 2 * 24 * 60; // 2 days
 
 function setCookie(name: string, value: string, minutes: number): void {
   const expires = new Date(Date.now() + minutes * 60 * 1000).toUTCString();

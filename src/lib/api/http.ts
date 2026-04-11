@@ -11,7 +11,7 @@ interface ApiRequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
 }
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "https://tuition-api.onrender.com";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
 
 export class ApiClientError extends Error {
   status: number;
@@ -86,6 +86,13 @@ export async function apiRequest<T extends KnownApiResponse>(path: string, optio
   const payload = await parseResponse(response);
 
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      document.cookie = "hometutorly.jwt=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax";
+      const redirect = window.location.pathname;
+      window.location.href = `/login?redirect=${encodeURIComponent(redirect)}`;
+      throw new ApiClientError("Session expired. Redirecting to login.", 401, payload);
+    }
+
     throw new ApiClientError(
       extractErrorMessage(payload, `Request failed with status ${response.status}`),
       response.status,

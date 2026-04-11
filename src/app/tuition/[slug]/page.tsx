@@ -94,8 +94,8 @@ export default async function TuitionDetailPage({
     }),
     hiringOrganization: {
       "@type": "Organization",
-      name: "TutorFind",
-      sameAs: "https://tutorfind.in",
+      name: "HomeTutorly",
+      sameAs: "https://hometutorly.com",
     },
   };
 

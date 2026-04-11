@@ -71,7 +71,7 @@ export default function BecomeATutor() {
             <div className="relative rounded-3xl overflow-hidden border border-white/15 shadow-2xl">
               <Image
                 src="/teacher.jpg"
-                alt="Become a tutor on TutorFind"
+                alt="Become a tutor on HomeTutorly"
                 width={600}
                 height={400}
                 className="w-full h-auto object-cover rounded-3xl"

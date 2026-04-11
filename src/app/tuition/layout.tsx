@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Find Tuition Near You | TutorFind",
+  title: "Find Tuition Near You | HomeTutorly",
   description:
     "Browse latest tuition requirements and connect with students near you. Find home and online tuition opportunities across India.",
   keywords:

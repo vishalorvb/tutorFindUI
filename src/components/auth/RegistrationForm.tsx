@@ -66,7 +66,7 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
         fullName: payload.fullName,
         email: payload.email,
       });
-      await sendOtp({ phoneNumber: payload.phone });
+      // OTP is sent by the createUser backend — no separate sendOtp call needed
       onOtpSent(payload);
     } catch (submitError) {
       const msg = getApiErrorMessage(submitError, "Unable to register. Please try again.");

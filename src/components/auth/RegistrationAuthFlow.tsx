@@ -51,7 +51,7 @@ export default function RegistrationAuthFlow() {
   return (
     <>
       <AuthHeader
-        title={step === "form" ? "Welcome to TutorFind" : "OTP Verification"}
+        title={step === "form" ? "Welcome to HomeTutorly" : "OTP Verification"}
         subtitle={
           step === "form"
             ? "Create your account to get started"
