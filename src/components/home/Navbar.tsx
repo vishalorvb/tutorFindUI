@@ -105,8 +105,8 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {isLoggedIn ? (
               <>
-                <Link href="/profile" className="text-sm font-semibold text-slate-600 hover:text-violet-700 transition-colors px-4 py-2.5 rounded-xl hover:bg-violet-50/80">
-                  Profile
+                <Link href="/dashboard" className="text-sm font-semibold text-slate-600 hover:text-violet-700 transition-colors px-4 py-2.5 rounded-xl hover:bg-violet-50/80">
+                  Dashboard
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -190,8 +190,8 @@ export default function Navbar() {
             <div className="pt-3 px-2 border-t border-slate-100 flex flex-col gap-2 mt-1">
               {isLoggedIn ? (
                 <>
-                  <Link href="/profile" className="block px-4 py-2.5 text-sm font-semibold text-slate-700 hover:text-violet-700 rounded-xl text-center hover:bg-violet-50 transition-colors">
-                    Profile
+                  <Link href="/dashboard" className="block px-4 py-2.5 text-sm font-semibold text-slate-700 hover:text-violet-700 rounded-xl text-center hover:bg-violet-50 transition-colors">
+                    Dashboard
                   </Link>
                   <button
                     onClick={() => { handleLogout(); setMenuOpen(false); }}

@@ -7,8 +7,10 @@ import type {
   SendOtpResponse,
   VerifyOtpPayload,
   VerifyOtpResponse,
+  UserInfoResponse,
 } from "@/types";
-import { apiRequest } from "./http";
+import { apiRequest, buildUrl } from "./http";
+import { getJwt } from "@/lib/auth/session";
 
 const AUTH_ENDPOINTS = {
   sendOtp: process.env.NEXT_PUBLIC_SEND_OTP_API_URL ?? "/usermanager/sendOtp",
@@ -16,6 +18,7 @@ const AUTH_ENDPOINTS = {
   login: process.env.NEXT_PUBLIC_LOGIN_API_URL ?? "/usermanager/login",
   verifyOtp: process.env.NEXT_PUBLIC_VERIFY_OTP_API_URL ?? "/auth/verify-otp",
   completeProfile: process.env.NEXT_PUBLIC_COMPLETE_PROFILE_API_URL ?? "/usermanager/createUser",
+  userInfo: "/usermanager/userinfo",
 } as const;
 
 export function normalizePhoneNumber(phoneNumber: string): string {
@@ -59,4 +62,22 @@ export async function completeProfile(payload: CompleteProfilePayload): Promise<
       phone_number: normalizePhoneNumber(payload.phoneNumber),
     },
   });
+}
+
+export async function getUserInfo(): Promise<UserInfoResponse> {
+  const token = getJwt();
+  const response = await fetch(buildUrl(AUTH_ENDPOINTS.userInfo), {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user info: ${response.status}`);
+  }
+
+  return response.json() as Promise<UserInfoResponse>;
 }

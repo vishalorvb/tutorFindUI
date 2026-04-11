@@ -4,6 +4,22 @@ export interface RegistrationFormData {
   phone: string;
 }
 
+export interface UserInfo {
+  id: number;
+  phone_number: string;
+  Full_name: string;
+  email: string;
+  credit_points: number;
+  profilepic: string | null;
+  is_teacher: boolean;
+  is_email_varified: boolean;
+  role: number;
+}
+
+export interface UserInfoResponse {
+  data: UserInfo;
+}
+
 export interface AuthUser {
   id: string;
   fullName?: string;

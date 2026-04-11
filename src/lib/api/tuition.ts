@@ -1,5 +1,6 @@
 import { buildUrl } from "./http";
 import type { Tuition } from "@/types";
+import { getJwt } from "@/lib/auth/session";
 
 // ─── Fetch latest tuitions (paginated) ───
 
@@ -91,4 +92,22 @@ export async function createTuition(payload: CreateTuitionPayload, jwt: string):
     throw new Error(text || `Request failed: ${res.status}`);
   }
   return res.json();
+}
+
+// ─── Fetch current user's posted tuitions ───
+
+export async function getMyPostedTuitions(): Promise<Tuition[]> {
+  const token = getJwt();
+  const res = await fetch(buildUrl("/tuition/getmypostedTuition"), {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch posted tuitions: ${res.status}`);
+  }
+  const json = await res.json();
+  return json.data ?? [];
 }

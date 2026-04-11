@@ -1,5 +1,6 @@
 import { buildUrl } from "./http";
 import type { TeacherFormData, Teacher } from "@/types";
+import { getJwt } from "@/lib/auth/session";
 
 // ─── Fetch latest teachers (paginated) ───
 
@@ -52,4 +53,22 @@ export async function createTeacher(data: TeacherFormData, jwt: string) {
     throw new Error(text || `Request failed: ${res.status}`);
   }
   return res.json();
+}
+
+// ─── Fetch current user's teacher profiles ───
+
+export async function getMyTeacherProfiles(): Promise<Teacher[]> {
+  const token = getJwt();
+  const res = await fetch(buildUrl("/teacher/my-teacher-profile"), {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch teacher profiles: ${res.status}`);
+  }
+  const json = await res.json();
+  return json.teachers ?? [];
 }
