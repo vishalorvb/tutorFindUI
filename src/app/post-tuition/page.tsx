@@ -33,7 +33,6 @@ export default function PostTuitionPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
-
   async function handleSubmit() {
     setError(null);
     try {
@@ -63,27 +62,21 @@ export default function PostTuitionPage() {
   if (submitted) {
     return (
       <PostTuitionLayout>
-        <div className="max-w-xl mx-auto text-center py-16">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-100 flex items-center justify-center">
-            <svg className="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <div className="text-center py-10">
+          <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
+            <svg className="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-3">
-            Requirement Posted!
-          </h1>
-          <p className="text-slate-500 mb-8">
-            We&apos;ll connect you with verified tutors for <strong className="text-slate-700">{formData.subject}</strong> ({formData.course}) shortly.
+          <h1 className="text-lg font-bold text-gray-900 mb-1.5">Requirement Posted!</h1>
+          <p className="text-[13px] text-gray-500 mb-5">
+            We&apos;ll connect you with tutors for <strong className="text-gray-700">{formData.subject}</strong> ({formData.course}).
           </p>
           <a
             href="/tuition"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white shadow-lg shadow-violet-300/40"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}
+            className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-violet-600 text-white text-[13px] font-semibold hover:bg-violet-700 transition"
           >
-            Browse Tuitions
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
+            Browse Tuitions →
           </a>
         </div>
       </PostTuitionLayout>
@@ -92,57 +85,41 @@ export default function PostTuitionPage() {
 
   return (
     <PostTuitionLayout>
-      {/* Page title */}
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Post Tuition Requirement
-        </h1>
-        <p className="mt-1.5 text-sm text-slate-500">Fill in your requirement and get matched with verified tutors.</p>
+      {/* Header */}
+      <div className="mb-3">
+        <h1 className="text-[15px] font-bold text-gray-900">Post Tuition Requirement</h1>
+        <p className="text-[11px] text-gray-500 mt-0.5">Get matched with verified tutors near you</p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8 items-start">
+      <div className="grid lg:grid-cols-2 gap-6 items-start">
         {/* Benefits — left side, hidden on mobile */}
         <div className="hidden lg:block">
           <BenefitsPanel />
         </div>
 
-        {/* Form section — right side */}
-        <div>
-          <div className="bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-lg sm:shadow-slate-200/70 border-0 sm:border sm:border-slate-100 -mx-4 sm:mx-0 px-4 sm:px-8 py-6 sm:py-8">
-            <Stepper currentStep={step} />
+        {/* Form card */}
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <Stepper currentStep={step} />
 
-            {error && (
-              <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold">
-                {error}
-              </div>
-            )}
+          {error && (
+            <div className="mb-3 px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-600 text-[12px] font-medium">
+              {error}
+            </div>
+          )}
 
-            {step === 1 && (
-              <StepOneForm
-                formData={formData}
-                onChange={handleChange}
-                onNext={() => setStep(2)}
-              />
-            )}
-            {step === 2 && (
-              <StepTwoForm
-                formData={formData}
-                onChange={handleChange}
-                onBack={() => setStep(1)}
-                onSubmit={handleSubmit}
-              />
-            )}
-          </div>
+          {step === 1 && (
+            <StepOneForm formData={formData} onChange={handleChange} onNext={() => setStep(2)} />
+          )}
+          {step === 2 && (
+            <StepTwoForm formData={formData} onChange={handleChange} onBack={() => setStep(1)} onSubmit={handleSubmit} />
+          )}
         </div>
       </div>
 
       {/* Mobile benefits — below form */}
-      <div className="lg:hidden mt-8">
+      <div className="lg:hidden mt-4">
         <BenefitsPanel />
       </div>
-
-      {/* Bottom spacer for mobile */}
-      <div className="h-4 lg:hidden" />
     </PostTuitionLayout>
   );
 }

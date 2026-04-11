@@ -4,58 +4,45 @@ const steps = ["Requirement", "Details"];
 
 export default function Stepper({ currentStep }: { currentStep: number }) {
   return (
-    <div className="flex items-center gap-3 mb-8">
+    <div className="flex items-center gap-2 mb-4">
       {steps.map((label, i) => {
         const stepNum = i + 1;
         const isCompleted = currentStep > stepNum;
         const isActive = currentStep === stepNum;
 
         return (
-          <div key={label} className="flex items-center gap-3 flex-1">
-            {/* Step circle */}
-            <div className="flex items-center gap-2.5">
+          <div key={label} className="flex items-center gap-2 flex-1">
+            <div className="flex items-center gap-1.5">
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 shrink-0 ${
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
                   isCompleted
-                    ? "text-white shadow-lg shadow-emerald-200/60"
+                    ? "bg-emerald-500 text-white"
                     : isActive
-                      ? "text-white shadow-lg shadow-violet-300/60"
-                      : "bg-slate-100 text-slate-400 border-2 border-slate-200"
+                      ? "text-white"
+                      : "bg-gray-200 text-gray-400"
                 }`}
-                style={
-                  isCompleted
-                    ? { background: `linear-gradient(135deg, ${colors.success}, ${colors.successLight})` }
-                    : isActive
-                      ? { background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})` }
-                      : undefined
-                }
+                style={isActive ? { background: colors.primary } : undefined}
               >
                 {isCompleted ? (
-                  <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
                   stepNum
                 )}
               </div>
-              <span
-                className={`text-sm font-semibold transition-colors ${
-                  isActive ? "text-slate-900" : isCompleted ? "text-emerald-600" : "text-slate-400"
-                }`}
-              >
+              <span className={`text-[11px] font-semibold ${
+                isActive ? "text-gray-800" : isCompleted ? "text-emerald-600" : "text-gray-400"
+              }`}>
                 {label}
               </span>
             </div>
 
-            {/* Connector line */}
             {i < steps.length - 1 && (
-              <div className="flex-1 h-0.5 rounded-full overflow-hidden bg-slate-200">
+              <div className="flex-1 h-[2px] rounded-full bg-gray-200 overflow-hidden">
                 <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: isCompleted ? "100%" : "0%",
-                    background: `linear-gradient(90deg, ${colors.success}, ${colors.successLight})`,
-                  }}
+                  className="h-full rounded-full bg-emerald-500 transition-all duration-400"
+                  style={{ width: isCompleted ? "100%" : "0%" }}
                 />
               </div>
             )}

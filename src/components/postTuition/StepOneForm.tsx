@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { StepOneFormProps } from "@/types";
-import { colors } from "@/config/theme";
 
 const SUBJECTS = ["Math", "Physics", "Chemistry", "English", "Coding", "Biology", "Accounts", "Economics"];
 const COURSES = [
@@ -52,24 +51,21 @@ function ComboBox({
         onChange={(e) => { onChange(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         placeholder={placeholder}
-        className={`w-full rounded-xl border bg-white py-3.5 px-4 text-sm text-slate-700 transition-all outline-none focus:ring-2 focus:ring-violet-200 placeholder:text-slate-400 ${
-          hasError ? "border-red-300 focus:border-red-400" : "border-slate-200 focus:border-violet-400"
+        className={`w-full h-9 rounded-lg border bg-white px-3 text-[13px] outline-none transition placeholder:text-gray-400 ${
+          hasError ? "border-red-300 focus:border-red-400 focus:ring-1 focus:ring-red-100" : "border-gray-200 focus:border-violet-400 focus:ring-1 focus:ring-violet-100"
         }`}
       />
-      <svg
-        className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
-        fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}
-      >
+      <svg className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
       </svg>
 
       {open && filtered.length > 0 && (
-        <ul className="absolute z-20 mt-1 w-full max-h-48 overflow-auto rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-200/70 py-1">
+        <ul className="absolute z-20 mt-1 w-full max-h-40 overflow-auto rounded-lg border border-gray-200 bg-white shadow-md py-0.5">
           {filtered.map((opt) => (
             <li
               key={opt}
               onMouseDown={() => { onChange(opt); setOpen(false); }}
-              className="px-4 py-2.5 text-sm text-slate-700 cursor-pointer hover:bg-violet-50 hover:text-violet-700 transition-colors"
+              className="px-3 py-1.5 text-[13px] text-gray-700 cursor-pointer hover:bg-violet-50 hover:text-violet-700"
             >
               {opt}
             </li>
@@ -97,10 +93,10 @@ export default function StepOneForm({ formData, onChange, onNext }: StepOneFormP
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3.5">
       {/* Subject */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
+        <label className="block text-[11px] font-semibold text-gray-600 mb-1">
           Subject <span className="text-red-400">*</span>
         </label>
         <ComboBox
@@ -110,12 +106,12 @@ export default function StepOneForm({ formData, onChange, onNext }: StepOneFormP
           hasError={!!errors.subject}
           onChange={(val) => { onChange("subject", val); setErrors((p) => ({ ...p, subject: "" })); }}
         />
-        {errors.subject && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.subject}</p>}
+        {errors.subject && <p className="mt-1 text-[11px] text-red-500">{errors.subject}</p>}
       </div>
 
       {/* Course */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
+        <label className="block text-[11px] font-semibold text-gray-600 mb-1">
           Class / Course <span className="text-red-400">*</span>
         </label>
         <ComboBox
@@ -125,15 +121,15 @@ export default function StepOneForm({ formData, onChange, onNext }: StepOneFormP
           hasError={!!errors.course}
           onChange={(val) => { onChange("course", val); setErrors((p) => ({ ...p, course: "" })); }}
         />
-        {errors.course && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.course}</p>}
+        {errors.course && <p className="mt-1 text-[11px] text-red-500">{errors.course}</p>}
       </div>
 
       {/* Teaching Mode */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-3">
+        <label className="block text-[11px] font-semibold text-gray-600 mb-1.5">
           Teaching Mode <span className="text-red-400">*</span>
         </label>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="flex gap-2">
           {MODES.map((mode) => {
             const selected = formData.teachingMode === mode.value;
             return (
@@ -141,40 +137,30 @@ export default function StepOneForm({ formData, onChange, onNext }: StepOneFormP
                 key={mode.value}
                 type="button"
                 onClick={() => { onChange("teachingMode", mode.value); setErrors((p) => ({ ...p, teachingMode: "" })); }}
-                className={`relative flex flex-col items-center gap-1.5 py-4 px-3 rounded-xl border-2 text-sm font-semibold transition-all duration-200 ${
+                className={`flex-1 flex items-center justify-center gap-1 h-9 rounded-lg border text-[12px] font-semibold transition-all ${
                   selected
-                    ? "border-violet-400 bg-violet-50 text-violet-700 shadow-md shadow-violet-100"
-                    : "border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50"
+                    ? "border-violet-400 bg-violet-50 text-violet-700"
+                    : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
                 }`}
               >
-                <span className="text-xl">{mode.icon}</span>
+                <span className="text-[13px]">{mode.icon}</span>
                 {mode.label}
-                {selected && (
-                  <span
-                    className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-white"
-                    style={{ background: colors.primary }}
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </span>
-                )}
               </button>
             );
           })}
         </div>
-        {errors.teachingMode && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.teachingMode}</p>}
+        {errors.teachingMode && <p className="mt-1 text-[11px] text-red-500">{errors.teachingMode}</p>}
       </div>
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">Description</label>
+        <label className="block text-[11px] font-semibold text-gray-600 mb-1">Description</label>
         <textarea
-          rows={3}
+          rows={2}
           value={formData.description}
           onChange={(e) => onChange("description", e.target.value)}
-          placeholder="Any specific requirements, preferred schedule, etc."
-          className="w-full rounded-xl border border-slate-200 bg-white py-3 px-4 text-sm text-slate-700 transition-all outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-400 placeholder:text-slate-400 resize-none"
+          placeholder="Any specific requirements..."
+          className="w-full h-16 rounded-lg border border-gray-200 bg-white px-3 py-2 text-[13px] outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:ring-1 focus:ring-violet-100 resize-none"
         />
       </div>
 
@@ -182,15 +168,9 @@ export default function StepOneForm({ formData, onChange, onNext }: StepOneFormP
       <button
         type="button"
         onClick={handleNext}
-        className="w-full py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-violet-300/40 hover:shadow-violet-400/50 group"
-        style={{ background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})` }}
+        className="w-full h-10 rounded-lg bg-violet-600 text-white text-[13px] font-bold hover:bg-violet-700 active:scale-[0.99] transition-all"
       >
-        <span className="flex items-center justify-center gap-2">
-          Next → Add Details
-          <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </span>
+        Next → Add Details
       </button>
     </div>
   );
