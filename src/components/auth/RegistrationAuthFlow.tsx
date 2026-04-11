@@ -39,6 +39,9 @@ export default function RegistrationAuthFlow() {
         password: otpCode,
       });
       saveJwt(result.access_token);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("hometutorly:auth"));
+      }
       showToast("Registration successful!", "success");
       router.push("/");
     } catch (err) {
