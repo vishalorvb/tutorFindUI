@@ -94,6 +94,23 @@ export async function createTuition(payload: CreateTuitionPayload, jwt: string):
   return res.json();
 }
 
+// ─── Toggle tuition status ───
+
+export async function changeTuitionStatus(tuitionId: number): Promise<void> {
+  const token = getJwt();
+  const res = await fetch(buildUrl("/tuition/changeStatus"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ tuition_id: tuitionId }),
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to change tuition status: ${res.status}`);
+  }
+}
+
 // ─── Fetch current user's posted tuitions ───
 
 export async function getMyPostedTuitions(): Promise<Tuition[]> {
