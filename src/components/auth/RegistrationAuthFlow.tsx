@@ -38,7 +38,12 @@ export default function RegistrationAuthFlow() {
         username: phoneNumber,
         password: otpCode,
       });
-      saveJwt(result.access_token);
+      const jwt = result?.data?.access ?? result?.access_token;
+      if (!jwt) {
+        showToast("Login failed: No access token returned.", "error");
+        throw new Error("No access token in login response");
+      }
+      saveJwt(jwt);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("hometutorly:auth"));
       }
