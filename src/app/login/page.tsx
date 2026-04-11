@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import AuthLayout from "@/components/auth/AuthLayout";
 import LoginAuthFlow from "@/components/auth/LoginAuthFlow";
 
@@ -10,7 +11,9 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <AuthLayout>
-      <LoginAuthFlow />
+      <Suspense>
+        <LoginAuthFlow />
+      </Suspense>
     </AuthLayout>
   );
 }
