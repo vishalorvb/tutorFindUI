@@ -4,9 +4,11 @@ import { colors } from "@/config/theme";
 import { getTuitionDetailSlug } from "@/lib/tuitionSlug";
 
 function timeAgo(dateStr: string): string {
-  const now = Date.now();
-  const diff = now - new Date(dateStr).getTime();
+  const timestamp = new Date(dateStr).getTime();
+  if (Number.isNaN(timestamp)) return "Just now";
+  const diff = Math.max(0, Date.now() - timestamp);
   const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;

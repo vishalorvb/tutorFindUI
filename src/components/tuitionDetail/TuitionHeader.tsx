@@ -3,9 +3,11 @@ import type { Tuition } from "@/types";
 import { colors } from "@/config/theme";
 
 function timeAgo(dateStr: string): string {
-  const now = Date.now();
-  const diff = now - new Date(dateStr).getTime();
+  const timestamp = new Date(dateStr).getTime();
+  if (Number.isNaN(timestamp)) return "Just now";
+  const diff = Math.max(0, Date.now() - timestamp);
   const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;
@@ -57,7 +59,7 @@ export default function TuitionHeader({ tuition }: { tuition: Tuition }) {
       {/* Main row: image + content */}
       <div className="flex gap-5">
         {/* Compact image thumbnail */}
-        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-100 to-indigo-100 shadow-md shadow-violet-200/50 shrink-0 ring-4 ring-white">
+        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-linear-to-br from-violet-100 to-indigo-100 shadow-md shadow-violet-200/50 shrink-0 ring-4 ring-white">
           <Image
             src={tuition.photo || "/images/tuition/default.svg"}
             alt={`${tuition.subject} tutor for ${tuition.course}`}
@@ -66,7 +68,7 @@ export default function TuitionHeader({ tuition }: { tuition: Tuition }) {
             priority
           />
           {/* Subject initial overlay */}
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-violet-600/70 to-indigo-600/70">
+          <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-violet-600/70 to-indigo-600/70">
             <span className="text-2xl sm:text-3xl font-black text-white drop-shadow-lg">
               {tuition.subject.charAt(0)}
             </span>
@@ -100,7 +102,7 @@ export default function TuitionHeader({ tuition }: { tuition: Tuition }) {
             </span>
 
             {tuition.fee != null && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-100 text-sm font-extrabold" style={{ color: colors.primary }}>
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-linear-to-r from-violet-50 to-indigo-50 border border-violet-100 text-sm font-extrabold" style={{ color: colors.primary }}>
                 ₹{tuition.fee.toLocaleString("en-IN")}
                 <span className="text-[10px] font-medium text-slate-400">/mo</span>
               </span>

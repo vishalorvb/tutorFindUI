@@ -5,7 +5,9 @@ import type { Tuition } from "@/types";
 import { getTuitionDetailSlug } from "@/lib/tuitionSlug";
 
 function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
+  const timestamp = new Date(dateStr).getTime();
+  if (Number.isNaN(timestamp)) return "Just now";
+  const diff = Math.max(0, Date.now() - timestamp);
   const hours = Math.floor(diff / (1000 * 60 * 60));
   if (hours < 1) return "Just now";
   if (hours < 24) return `${hours}h ago`;

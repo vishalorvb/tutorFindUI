@@ -18,9 +18,11 @@ const MODE_STYLES: Record<string, string> = {
 };
 
 function timeAgo(dateStr: string): string {
-  const now = Date.now();
-  const diff = now - new Date(dateStr).getTime();
+  const timestamp = new Date(dateStr).getTime();
+  if (Number.isNaN(timestamp)) return "Just now";
+  const diff = Math.max(0, Date.now() - timestamp);
   const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;
@@ -79,6 +81,15 @@ export default function TuitionDetailClient({ tuition }: { tuition: Tuition }) {
               </span>
             )}
           </div>
+
+          {tuition.student_name && (
+            <p className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-medium text-violet-700">
+              <svg className="w-3.5 h-3.5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+              Student: {tuition.student_name}
+            </p>
+          )}
 
           {/* ── Stats row ── */}
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] mb-2">

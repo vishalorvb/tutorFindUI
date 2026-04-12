@@ -11,12 +11,8 @@ function slugify(value: string) {
 }
 
 export function getTuitionDetailSlug(tuition: TuitionSlugInput) {
-  if (tuition.slug && /-\d+$/.test(tuition.slug)) {
-    return tuition.slug;
-  }
-
   const baseSlug = tuition.slug
-    ? slugify(tuition.slug)
+    ? slugify(tuition.slug.replace(/-\d+$/, ""))
     : slugify([tuition.subject, tuition.course, tuition.locality, tuition.city].filter(Boolean).join(" "));
 
   return baseSlug ? `${baseSlug}-${tuition.id}` : String(tuition.id);
