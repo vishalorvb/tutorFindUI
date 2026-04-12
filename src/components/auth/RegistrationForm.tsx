@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import type { RegistrationFormData, FormErrors, RegistrationFormProps } from "@/types";
 import { colors, gradients, shadows } from "@/config/theme";
 import { completeProfile, normalizePhoneNumber, sendOtp } from "@/lib/api/auth";
@@ -36,6 +37,7 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
     phone: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
 
@@ -49,6 +51,10 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const validationErrors = validate(form);
+
+    if (!agreeTerms) {
+      validationErrors.terms = "You must agree to the Terms and Conditions";
+    }
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -151,9 +157,37 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
         )}
       </div>
 
+      <div>
+        <label className="flex items-start gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agreeTerms}
+            onChange={(e) => {
+              setAgreeTerms(e.target.checked);
+              if (errors.terms) setErrors((prev) => ({ ...prev, terms: undefined }));
+            }}
+            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+          />
+          <span className="text-xs text-slate-600 leading-relaxed">
+            I agree to the{" "}
+            <Link
+              href="/terms"
+              target="_blank"
+              className="font-semibold underline hover:no-underline"
+              style={{ color: colors.primary }}
+            >
+              Terms and Conditions
+            </Link>
+          </span>
+        </label>
+        {errors.terms && (
+          <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.terms}</p>
+        )}
+      </div>
+
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || !agreeTerms}
         className="w-full py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all duration-200 hover:scale-[1.02] hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
         style={{
           background: gradients.primary,
@@ -173,16 +207,7 @@ export default function RegistrationForm({ onOtpSent }: RegistrationFormProps) {
         )}
       </button>
 
-      <p className="text-center text-xs text-slate-400 leading-relaxed pt-2">
-        By continuing, you agree to our{" "}
-        <a href="#" className="font-semibold hover:underline" style={{ color: colors.primary }}>
-          Terms of Service
-        </a>{" "}
-        &amp;{" "}
-        <a href="#" className="font-semibold hover:underline" style={{ color: colors.primary }}>
-          Privacy Policy
-        </a>
-      </p>
+
     </form>
   );
 }

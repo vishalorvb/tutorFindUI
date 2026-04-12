@@ -1,12 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getTeacherBySlug } from "@/lib/api/teacher";
-import ProfileLayout from "@/components/teacherProfile/ProfileLayout";
-import ProfileHeader from "@/components/teacherProfile/ProfileHeader";
-import ProfileInfo from "@/components/teacherProfile/ProfileInfo";
-import AboutSection from "@/components/teacherProfile/AboutSection";
-import ContactCard from "@/components/teacherProfile/ContactCard";
+import { getTeacherById } from "@/lib/api/teacher";
+import TeacherProfile from "@/components/teacherProfile/TeacherProfile";
 import SimilarTeachers from "@/components/teacherProfile/SimilarTeachers";
 
 // ─── Dynamic Metadata ──────────────────────────────────────────────────────────
@@ -17,12 +13,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const baseSlug = slug.replace(/-\d+$/, "");
+  const idMatch = slug.match(/-(\d+)$/);
+  if (!idMatch) return { title: "Teacher Profile" };
   try {
-    const teacher = await getTeacherBySlug(baseSlug);
+    const teacher = await getTeacherById(Number(idMatch[1]));
     return {
-      title: `${teacher.subject} Teacher in ${teacher.location} | ${teacher.experience} Years Experience`,
-      description: `Experienced ${teacher.subject} teacher in ${teacher.location}. Contact now for ${teacher.teaching_mode} tuition. Fee: ₹${teacher.fee}/month.`,
+      title: `${teacher.subject} Teacher in ${teacher.location} | HomeTutorly`,
+      description: `Find experienced ${teacher.subject} tutor in ${teacher.location}. Contact now for tuition.`,
     };
   } catch {
     return { title: "Teacher Profile" };
@@ -37,45 +34,42 @@ export default async function TeacherProfilePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  // Strip trailing "-{id}" appended to slug in URLs
-  const baseSlug = slug.replace(/-\d+$/, "");
+  // Extract ID from end of slug (e.g. "john-doe-1" → 1)
+  const idMatch = slug.match(/-(\d+)$/);
+  if (!idMatch) notFound();
 
   let teacher;
   try {
-    teacher = await getTeacherBySlug(baseSlug);
+    teacher = await getTeacherById(Number(idMatch[1]));
   } catch {
     notFound();
   }
 
   return (
-    <ProfileLayout>
-      {/* Breadcrumb */}
-      <nav className="text-xs text-slate-400 mb-6 flex items-center gap-1.5">
-        <Link href="/" className="hover:text-violet-600 transition-colors">Home</Link>
-        <span>/</span>
-        <Link href="/teachers" className="hover:text-violet-600 transition-colors">Teachers</Link>
-        <span>/</span>
-        <span className="text-slate-600 font-medium">{teacher.name}</span>
-      </nav>
+    <div className="min-h-screen bg-gray-50/50">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 sm:py-6">
+        {/* Breadcrumb */}
+        <nav className="text-xs text-gray-400 mb-2 flex items-center gap-1.5">
+          <Link href="/" className="hover:text-violet-600 transition-colors">Home</Link>
+          <svg className="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <Link href="/teachers" className="hover:text-violet-600 transition-colors">Teachers</Link>
+          <svg className="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <span className="text-gray-600 font-medium truncate">{teacher.name}</span>
+        </nav>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Main column */}
-        <div className="lg:col-span-2">
-          <ProfileHeader teacher={teacher} />
-          <ProfileInfo teacher={teacher} />
-          <AboutSection teacher={teacher} />
+        <div className="space-y-3">
+          <TeacherProfile teacher={teacher} />
           <SimilarTeachers
             currentSlug={teacher.slug}
             subject={teacher.subject}
             location={teacher.location}
           />
         </div>
-
-        {/* Sidebar */}
-        <div>
-          <ContactCard teacher={teacher} />
-        </div>
       </div>
-    </ProfileLayout>
+    </div>
   );
 }

@@ -68,34 +68,44 @@ export default function TeacherList() {
       {teachers.map((t) => (
         <div
           key={t.id}
-          onClick={() => router.push(`/teachers/${t.slug}`)}
-          className="group p-3.5 bg-white rounded-2xl border border-gray-100 cursor-pointer hover:shadow-md hover:shadow-gray-100/80 hover:border-gray-200 transition-all duration-200"
+          className="group p-3.5 bg-white rounded-2xl border border-gray-100 hover:shadow-md hover:shadow-gray-100/80 hover:border-gray-200 transition-all duration-200"
         >
           <div className="flex gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-              t.teaching_mode === "online" ? "bg-emerald-50" : "bg-amber-50"
-            }`}>
-              <svg className={`w-5 h-5 ${
-                t.teaching_mode === "online" ? "text-emerald-500" : "text-amber-500"
-              }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {t.teaching_mode === "online" ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                )}
-              </svg>
-            </div>
-
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-[13px] font-semibold text-gray-900 capitalize truncate">{t.subject} Teacher</p>
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full capitalize shrink-0 ${
+              <div className="flex items-center gap-2">
+                <span className="text-[13px] font-semibold text-gray-900 capitalize truncate leading-none">{t.subject} Teacher</span>
+                <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${
                   t.teaching_mode === "online"
                     ? "bg-emerald-50 text-emerald-600"
-                    : "bg-amber-50 text-amber-600"
+                    : t.teaching_mode === "both"
+                      ? "bg-blue-50 text-blue-600"
+                      : "bg-amber-50 text-amber-600"
                 }`}>
-                  {t.teaching_mode}
+                  {t.teaching_mode === "online" ? (
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  ) : t.teaching_mode === "both" ? (
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" />
+                    </svg>
+                  )}
                 </span>
+                <div className="ml-auto shrink-0">
+                  <button
+                    onClick={() => router.push(`/edit-teacher/${t.id}`)}
+                    title="Edit profile"
+                    className="p-1.5 rounded-lg hover:bg-violet-50 transition-colors"
+                  >
+                    <svg className="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div className="flex items-center gap-1.5 mt-1">
                 <span className="text-[11px] text-gray-400">{t.location}</span>
@@ -104,11 +114,10 @@ export default function TeacherList() {
                 <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
                 <span className="text-[11px] font-medium text-gray-600">₹{t.fee}/hr</span>
               </div>
+              {t.about && (
+                <p className="text-[11px] text-gray-400 mt-1.5 line-clamp-2">{t.about}</p>
+              )}
             </div>
-
-            <svg className="w-4 h-4 text-gray-300 group-hover:text-gray-400 shrink-0 mt-1 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
           </div>
         </div>
       ))}

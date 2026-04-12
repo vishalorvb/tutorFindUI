@@ -26,6 +26,20 @@ export async function getTeacherBySlug(slug: string): Promise<Teacher> {
   return json.data ?? json;
 }
 
+// ─── Fetch teacher by ID ───
+
+export async function getTeacherById(id: number): Promise<Teacher> {
+  const res = await fetch(buildUrl(`/teacher/getTeacherById/${id}`), {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Teacher not found: ${res.status}`);
+  }
+  const json = await res.json();
+  return json.data ?? json;
+}
+
 export async function createTeacher(data: TeacherFormData, jwt: string) {
   const formData = new FormData();
   formData.append("teacher_name", data.teacher_name);
@@ -71,4 +85,52 @@ export async function getMyTeacherProfiles(): Promise<Teacher[]> {
   }
   const json = await res.json();
   return json.teachers ?? [];
+}
+
+// ─── Fetch single teacher info by ID ───
+
+export async function getTeacherInfo(id: number): Promise<Teacher> {
+  const token = getJwt();
+  const res = await fetch(buildUrl(`/teacher/getTecher_info/${id}`), {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch teacher info: ${res.status}`);
+  }
+  return res.json();
+}
+
+// ─── Update teacher profile ───
+
+export async function updateTeacher(id: number, data: TeacherFormData, jwt: string) {
+  const formData = new FormData();
+  formData.append("teacher_name", data.teacher_name);
+  formData.append("gender", data.gender);
+  formData.append("age", data.age);
+  formData.append("experience", data.experience);
+  formData.append("qualification", data.qualification);
+  formData.append("subject", data.subject.join(" "));
+  formData.append("classes", data.classes.join(" "));
+  formData.append("about", data.about);
+  formData.append("mode", data.mode);
+  formData.append("fee", data.fee);
+  formData.append("pincode", data.pincode);
+  formData.append("location", data.location);
+  if (data.photo) formData.append("photo", data.photo);
+
+  const res = await fetch(buildUrl(`/teacher/update_teacher_profile/${id}`), {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${jwt}` },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Request failed: ${res.status}`);
+  }
+  return res.json();
 }

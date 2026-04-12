@@ -20,11 +20,12 @@ export default function SimilarTeachers({
   useEffect(() => {
     getLatestTeachers(1)
       .then((data) => {
+        const keyword = subject.split(" ")[0]?.toLowerCase() ?? "";
         const filtered = data
           .filter(
             (t) =>
               t.slug !== currentSlug &&
-              (t.subject?.toLowerCase().includes(subject.split(" ")[0]?.toLowerCase() ?? "") ||
+              (t.subject?.toLowerCase().includes(keyword) ||
                 t.location?.toLowerCase() === location.toLowerCase())
           )
           .slice(0, 4);
@@ -36,45 +37,55 @@ export default function SimilarTeachers({
   if (teachers.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-24 lg:mb-6">
-      <h2 className="text-base font-black text-slate-900 mb-4">Similar Teachers</h2>
-      <div className="space-y-3">
+    <section className="pb-20 sm:pb-0 bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <div className="flex items-center gap-2.5 px-4 py-3 border-b border-gray-100 bg-linear-to-r from-sky-50/60 via-white to-indigo-50/60">
+        <div className="w-7 h-7 rounded-lg bg-linear-to-br from-sky-500 to-indigo-500 flex items-center justify-center shadow-sm">
+          <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <h2 className="text-sm font-bold bg-linear-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent">Similar Teachers</h2>
+      </div>
+      <div className="p-4">
+      <div className="space-y-2">
         {teachers.map((t) => {
-          const subjects = t.subject ? t.subject.split(/[\s,]+/).slice(0, 2) : [];
+          const hasPhoto = !!t.photo;
           return (
             <Link
               key={t.id}
               href={`/teachers/${t.slug}-${t.id}`}
-              className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100"
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100"
             >
-              <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-violet-100">
-                <Image
-                  src={t.photo || "/images/teacher/default.png"}
-                  alt={t.name}
-                  width={48}
-                  height={48}
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-11 h-11 rounded-xl overflow-hidden shrink-0 bg-linear-to-br from-violet-100 to-indigo-100">
+                {hasPhoto ? (
+                  <Image
+                    src={t.photo!}
+                    alt={t.name}
+                    width={44}
+                    height={44}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                  </div>
+                )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-slate-900 truncate">{t.name}</p>
-                <p className="text-xs text-slate-500 truncate">{t.location}</p>
-                <div className="flex gap-1 mt-1">
-                  {subjects.map((s) => (
-                    <span key={s} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700">
-                      {s}
-                    </span>
-                  ))}
-                </div>
+                <p className="text-sm font-semibold text-gray-900 truncate">{t.name}</p>
+                <p className="text-xs text-gray-500 truncate">{t.subject} · {t.location}</p>
               </div>
-              <div className="text-right flex-shrink-0">
-                <p className="text-sm font-black text-violet-700">&#8377;{t.fee}</p>
-                <p className="text-[10px] text-slate-400">/month</p>
+              <div className="text-right shrink-0">
+                <p className="text-sm font-bold text-violet-600">₹{t.fee}</p>
+                <p className="text-[10px] text-gray-400">/month</p>
               </div>
             </Link>
           );
         })}
       </div>
-    </div>
+      </div>
+    </section>
   );
 }

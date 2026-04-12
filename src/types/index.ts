@@ -92,6 +92,7 @@ export interface FormErrors {
   email?: string;
   phone?: string;
   otp?: string;
+  terms?: string;
 }
 
 export type AuthStep = "form" | "otp";
@@ -237,7 +238,7 @@ export interface Teacher {
   name: string;
   phone_number: string;
   gender: string;
-  experience: number;
+  experience: number | string;
   location: string;
   qualification: string;
   subject: string;

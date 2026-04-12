@@ -88,6 +88,14 @@ export default function TuitionList() {
     );
   }
 
+  const getTuitionSlug = (t: Tuition) => {
+    // If slug already ends with -<id>, use it directly
+    if (t.slug && /-\d+$/.test(t.slug)) return t.slug;
+    // Otherwise construct a valid slug from available data
+    const parts = [t.locality, t.city, t.course, t.subject].filter(Boolean).join("-");
+    return `${parts}-${t.id}`;
+  };
+
   return (
     <div className="mt-3 space-y-2.5">
       {tuitions.map((t) => {
@@ -95,7 +103,7 @@ export default function TuitionList() {
         return (
           <div
             key={t.id}
-            onClick={() => router.push(`/tuition/${t.slug}`)}
+            onClick={() => router.push(`/tuition/${getTuitionSlug(t)}`)}
             className="group p-3.5 bg-white rounded-2xl border border-gray-100 cursor-pointer hover:shadow-md hover:shadow-gray-100/80 hover:border-gray-200 transition-all duration-200"
           >
             <div className="flex gap-3">
