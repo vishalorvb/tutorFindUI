@@ -15,7 +15,6 @@ const MODE_STYLES: Record<string, string> = {
 export default function TeacherProfile({ teacher }: { teacher: Teacher }) {
   const hasPhoto = !!teacher.photo;
   const subjects = teacher.subject ? teacher.subject.split(/[\s,]+/).filter(Boolean) : [];
-  const classes = teacher.classes ? teacher.classes.split(/[\s,]+/).filter(Boolean) : [];
   const modeLabel = MODE_LABELS[teacher.teaching_mode] ?? teacher.teaching_mode;
   const modeStyle = MODE_STYLES[teacher.teaching_mode] ?? "bg-gray-50 text-gray-600 border-gray-200";
 
@@ -93,7 +92,7 @@ export default function TeacherProfile({ teacher }: { teacher: Teacher }) {
           </div>
 
           {/* ── Subjects & Classes chips ── */}
-          {(subjects.length > 0 || classes.length > 0) && (
+          {(subjects.length > 0 || teacher.classes) && (
             <div className="flex flex-wrap gap-1 mb-2">
               {subjects.map((s) => (
                 <span key={s} className="inline-flex items-center gap-0.5 bg-violet-50 text-violet-700 border border-violet-100 px-2 py-0.5 rounded-md text-[10px] font-semibold">
@@ -101,11 +100,12 @@ export default function TeacherProfile({ teacher }: { teacher: Teacher }) {
                   {s}
                 </span>
               ))}
-              {classes.map((c) => (
-                <span key={c} className="inline-flex items-center bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded-md text-[10px] font-semibold">
-                  Class {c}
+              {teacher.classes && (
+                <span className="inline-flex items-center gap-0.5 bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded-md text-[10px] font-semibold">
+                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                  {teacher.classes}
                 </span>
-              ))}
+              )}
             </div>
           )}
 

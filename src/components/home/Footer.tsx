@@ -3,31 +3,22 @@ import Link from "next/link";
 
 const footerLinks = {
   company: [
-    { label: "About Us", href: "#" },
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Careers", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Press", href: "#" },
+    { label: "About Us", href: "/" },
+    { label: "How It Works", href: "/#how-it-works" },
+    { label: "Terms of Service", href: "/terms" },
   ],
   students: [
-    { label: "Find a Tutor", href: "#subjects" },
-    { label: "Post Requirement", href: "#" },
-    { label: "Online Tutors", href: "#" },
-    { label: "Home Tutors", href: "#" },
-    { label: "Pricing", href: "#" },
+    { label: "Find a Tutor", href: "/teachers" },
+    { label: "Post Requirement", href: "/post-tuition" },
+    { label: "Browse Tuitions", href: "/tuition" },
   ],
   tutors: [
-    { label: "Become a Tutor", href: "#become-tutor" },
-    { label: "Tutor Dashboard", href: "#" },
-    { label: "Tutor Resources", href: "#" },
-    { label: "Safety Guidelines", href: "#" },
+    { label: "Become a Tutor", href: "/become-teacher" },
+    { label: "Tutor Dashboard", href: "/dashboard" },
   ],
   support: [
-    { label: "Help Center", href: "#" },
-    { label: "Contact Us", href: "#" },
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Cookie Policy", href: "#" },
+    { label: "Contact Us", href: "/" },
+    { label: "Terms of Service", href: "/terms" },
   ],
 };
 
@@ -169,7 +160,7 @@ export default function Footer() {
               <h5 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "rgba(196,181,253,0.4)" }}>Tutors by City</h5>
               <div className="flex flex-wrap gap-2">
                 {cities.map((city) => (
-                  <a key={city} href="#"
+                  <a key={city} href="/teachers"
                     className="text-xs px-2.5 py-1 rounded-full transition-all duration-200"
                     style={{ color: "rgba(196,181,253,0.5)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#a78bfa"; (e.currentTarget as HTMLElement).style.background = "rgba(124,58,237,0.15)"; }}
@@ -183,7 +174,7 @@ export default function Footer() {
               <h5 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "rgba(196,181,253,0.4)" }}>Tutors by Subject</h5>
               <div className="flex flex-wrap gap-2">
                 {subjects.map((subj) => (
-                  <a key={subj} href="#"
+                  <a key={subj} href="/teachers"
                     className="text-xs px-2.5 py-1 rounded-full transition-all duration-200"
                     style={{ color: "rgba(196,181,253,0.5)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#fbbf24"; (e.currentTarget as HTMLElement).style.background = "rgba(245,158,11,0.12)"; }}
@@ -204,8 +195,8 @@ export default function Footer() {
             © {new Date().getFullYear()} HomeTutorly. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            {["Privacy", "Terms", "Cookies"].map((label) => (
-              <a key={label} href="#" className="text-xs transition-colors duration-200"
+            {[{ label: "Privacy", href: "/terms" }, { label: "Terms", href: "/terms" }].map(({ label, href }) => (
+              <a key={label} href={href} className="text-xs transition-colors duration-200"
                 style={{ color: "rgba(196,181,253,0.35)" }}
                 onMouseEnter={e => ((e.target as HTMLElement).style.color = "#c4b5fd")}
                 onMouseLeave={e => ((e.target as HTMLElement).style.color = "rgba(196,181,253,0.35)")}>
