@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 const testimonials = [
@@ -73,7 +71,7 @@ export default function Testimonials() {
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight">
             What Students{" "}
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Say</span>
+            <span className="bg-linear-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Say</span>
           </h2>
           <p className="mt-3 text-lg text-slate-500 max-w-xl mx-auto">
             Real experiences from students and parents who found the right tutor.
@@ -84,10 +82,7 @@ export default function Testimonials() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {testimonials.map((t, i) => (
             <div key={i}
-              className="group relative bg-white border border-slate-100 rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-              style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.05)" }}
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 20px 50px ${t.glow}`)}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 2px 16px rgba(0,0,0,0.05)")}>
+              className="group relative bg-white border border-slate-100 rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 overflow-hidden shadow-sm hover:shadow-2xl">
 
               {/* Background glow on hover */}
               <div className="absolute top-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"

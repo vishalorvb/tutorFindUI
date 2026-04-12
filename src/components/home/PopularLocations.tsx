@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 
 const cities = [
@@ -41,10 +40,7 @@ export default function PopularLocations() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
           {cities.map((city, i) => (
             <Link key={i} href={`/tuition/${city.name.toLowerCase().replace(/\s+/g, "-")}`}
-              className="group relative flex flex-col items-center text-center p-5 bg-white border border-slate-100 rounded-2xl hover:border-transparent overflow-hidden transition-all duration-300 hover:-translate-y-1"
-              style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 16px 40px rgba(99,102,241,0.15)")}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)")}>
+              className="group relative flex flex-col items-center text-center p-5 bg-white border border-slate-100 rounded-2xl hover:border-transparent overflow-hidden transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-2xl">
 
               {/* Background fill */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity duration-300"

@@ -1,5 +1,3 @@
-"use client";
-
 const benefits = [
   {
     icon: (
@@ -81,7 +79,7 @@ export default function WhyChooseUs() {
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight">
             Why Students{" "}
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Choose Us</span>
+            <span className="bg-linear-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Choose Us</span>
           </h2>
           <p className="mt-3 text-lg text-slate-500 max-w-xl mx-auto">
             We make finding the perfect tutor simple, safe, and risk-free.
@@ -92,11 +90,8 @@ export default function WhyChooseUs() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {benefits.map((benefit, i) => (
             <div key={i}
-              className="group flex gap-5 p-6 rounded-3xl bg-white border border-slate-100 transition-all duration-300 hover:-translate-y-1 cursor-default"
-              style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.04)" }}
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 16px 40px ${benefit.glow}`)}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 2px 16px rgba(0,0,0,0.04)")}>
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-white shadow-lg"
+              className="group flex gap-5 p-6 rounded-3xl bg-white border border-slate-100 transition-all duration-300 hover:-translate-y-1 cursor-default shadow-sm hover:shadow-2xl">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-white shadow-lg"
                 style={{ background: benefit.gradient, boxShadow: `0 6px 20px ${benefit.glow}` }}>
                 {benefit.icon}
               </div>

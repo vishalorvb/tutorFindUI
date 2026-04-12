@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 
 const footerLinks = {
@@ -48,7 +47,7 @@ export default function Footer() {
                 <span style={{ background: "linear-gradient(90deg, #a78bfa, #f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Find</span>
               </span>
             </Link>
-            <p className="text-sm leading-relaxed mb-5" style={{ color: "rgba(196,181,253,0.65)" }}>
+            <p className="text-sm leading-relaxed mb-5 text-violet-200/65">
               Connecting students with the best home and online tutors across India.
             </p>
             {/* Social icons */}
@@ -60,10 +59,7 @@ export default function Footer() {
                 { label: "Instagram", path: "M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01M6.5 19.5h11a3 3 0 003-3v-11a3 3 0 00-3-3h-11a3 3 0 00-3 3v11a3 3 0 003 3z" },
               ].map((social) => (
                 <a key={social.label} href="#" aria-label={social.label}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
-                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, #7c3aed, #4f46e5)"; (e.currentTarget as HTMLElement).style.border = "1px solid transparent"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.07)"; (e.currentTarget as HTMLElement).style.border = "1px solid rgba(255,255,255,0.1)"; }}>
+                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110 bg-white/[0.07] border border-white/10 hover:bg-violet-600 hover:border-transparent">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d={social.path} />
                   </svg>
@@ -81,10 +77,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm transition-colors duration-200"
-                    style={{ color: "rgba(196,181,253,0.6)" }}
-                    onMouseEnter={e => ((e.target as HTMLElement).style.color = "#c4b5fd")}
-                    onMouseLeave={e => ((e.target as HTMLElement).style.color = "rgba(196,181,253,0.6)")}>
+                  <a href={link.href} className="text-sm text-violet-200/60 hover:text-violet-300 transition-colors duration-200">
                     {link.label}
                   </a>
                 </li>
@@ -101,10 +94,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {footerLinks.students.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm transition-colors duration-200"
-                    style={{ color: "rgba(196,181,253,0.6)" }}
-                    onMouseEnter={e => ((e.target as HTMLElement).style.color = "#c4b5fd")}
-                    onMouseLeave={e => ((e.target as HTMLElement).style.color = "rgba(196,181,253,0.6)")}>
+                  <a href={link.href} className="text-sm text-violet-200/60 hover:text-violet-300 transition-colors duration-200">
                     {link.label}
                   </a>
                 </li>
@@ -121,10 +111,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {footerLinks.tutors.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm transition-colors duration-200"
-                    style={{ color: "rgba(196,181,253,0.6)" }}
-                    onMouseEnter={e => ((e.target as HTMLElement).style.color = "#fbbf24")}
-                    onMouseLeave={e => ((e.target as HTMLElement).style.color = "rgba(196,181,253,0.6)")}>
+                  <a href={link.href} className="text-sm text-violet-200/60 hover:text-amber-300 transition-colors duration-200">
                     {link.label}
                   </a>
                 </li>
@@ -141,10 +128,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {footerLinks.support.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm transition-colors duration-200"
-                    style={{ color: "rgba(196,181,253,0.6)" }}
-                    onMouseEnter={e => ((e.target as HTMLElement).style.color = "#c4b5fd")}
-                    onMouseLeave={e => ((e.target as HTMLElement).style.color = "rgba(196,181,253,0.6)")}>
+                  <a href={link.href} className="text-sm text-violet-200/60 hover:text-violet-300 transition-colors duration-200">
                     {link.label}
                   </a>
                 </li>
@@ -157,28 +141,22 @@ export default function Footer() {
         <div className="mt-12 pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h5 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "rgba(196,181,253,0.4)" }}>Tutors by City</h5>
+              <h5 className="text-xs font-black uppercase tracking-widest mb-3 text-violet-200/40">Tutors by City</h5>
               <div className="flex flex-wrap gap-2">
                 {cities.map((city) => (
                   <a key={city} href="/teachers"
-                    className="text-xs px-2.5 py-1 rounded-full transition-all duration-200"
-                    style={{ color: "rgba(196,181,253,0.5)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#a78bfa"; (e.currentTarget as HTMLElement).style.background = "rgba(124,58,237,0.15)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(196,181,253,0.5)"; (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; }}>
+                    className="text-xs px-2.5 py-1 rounded-full transition-all duration-200 text-violet-200/50 bg-white/4 border border-white/8 hover:text-violet-400 hover:bg-violet-500/15">
                     {city}
                   </a>
                 ))}
               </div>
             </div>
             <div>
-              <h5 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: "rgba(196,181,253,0.4)" }}>Tutors by Subject</h5>
+              <h5 className="text-xs font-black uppercase tracking-widest mb-3 text-violet-200/40">Tutors by Subject</h5>
               <div className="flex flex-wrap gap-2">
                 {subjects.map((subj) => (
                   <a key={subj} href="/teachers"
-                    className="text-xs px-2.5 py-1 rounded-full transition-all duration-200"
-                    style={{ color: "rgba(196,181,253,0.5)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#fbbf24"; (e.currentTarget as HTMLElement).style.background = "rgba(245,158,11,0.12)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(196,181,253,0.5)"; (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; }}>
+                    className="text-xs px-2.5 py-1 rounded-full transition-all duration-200 text-violet-200/50 bg-white/4 border border-white/8 hover:text-amber-300 hover:bg-amber-500/12">
                     {subj}
                   </a>
                 ))}
@@ -191,15 +169,12 @@ export default function Footer() {
       {/* Bottom bar */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs" style={{ color: "rgba(196,181,253,0.35)" }}>
+          <p className="text-xs text-violet-200/35">
             © {new Date().getFullYear()} HomeTutorly. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             {[{ label: "Privacy", href: "/terms" }, { label: "Terms", href: "/terms" }].map(({ label, href }) => (
-              <a key={label} href={href} className="text-xs transition-colors duration-200"
-                style={{ color: "rgba(196,181,253,0.35)" }}
-                onMouseEnter={e => ((e.target as HTMLElement).style.color = "#c4b5fd")}
-                onMouseLeave={e => ((e.target as HTMLElement).style.color = "rgba(196,181,253,0.35)")}>
+              <a key={label} href={href} className="text-xs text-violet-200/35 hover:text-violet-300 transition-colors duration-200">
                 {label}
               </a>
             ))}

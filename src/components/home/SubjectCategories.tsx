@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 
 const subjects = [
@@ -35,10 +34,7 @@ export default function SubjectCategories() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
           {subjects.map((subject, i) => (
             <Link key={i} href={`/tuition/${subject.slug}`}
-              className="group relative flex flex-col items-center text-center p-6 sm:p-7 bg-white border border-slate-100 rounded-3xl hover:border-transparent overflow-hidden transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
-              style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 20px 50px ${subject.glow}`)}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.05)")}>
+              className="group relative flex flex-col items-center text-center p-6 sm:p-7 bg-white border border-slate-100 rounded-3xl hover:border-transparent overflow-hidden transition-all duration-300 hover:-translate-y-1.5 cursor-pointer shadow-sm hover:shadow-2xl">
 
               {/* Background fill on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.04] transition-opacity duration-300"

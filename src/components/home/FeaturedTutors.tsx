@@ -1,8 +1,4 @@
-﻿"use client";
-
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
+﻿import Link from "next/link";
 import { getLatestTeachers } from "@/lib/api/teacher";
 import type { Teacher } from "@/types";
 
@@ -20,14 +16,14 @@ function initials(name: string) {
   return name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 }
 
-export default function FeaturedTutors() {
-  const [tutors, setTutors] = useState<Teacher[]>([]);
-
-  useEffect(() => {
-    getLatestTeachers(1)
-      .then((data) => setTutors(data.slice(0, 6)))
-      .catch(() => {});
-  }, []);
+export default async function FeaturedTutors() {
+  let tutors: Teacher[] = [];
+  try {
+    const data = await getLatestTeachers(1);
+    tutors = data.slice(0, 6);
+  } catch {
+    // silently fail — section just won't render
+  }
 
   if (tutors.length === 0) return null;
 
@@ -43,7 +39,7 @@ export default function FeaturedTutors() {
             </span>
             <h2 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight">
               Featured{" "}
-              <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Tutors</span>
+              <span className="bg-linear-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Tutors</span>
             </h2>
             <p className="mt-2 text-slate-500 max-w-lg">Top-rated, verified tutors across subjects and cities.</p>
           </div>
@@ -65,13 +61,10 @@ export default function FeaturedTutors() {
               <Link
                 key={tutor.id}
                 href={`/teachers/${tutor.slug}-${tutor.id}`}
-                className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 transition-all duration-300 hover:-translate-y-1"
-                style={{ boxShadow: "0 1px 12px rgba(0,0,0,0.06)" }}
-                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.boxShadow = `0 20px 50px ${glow}`)}
-                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.boxShadow = "0 1px 12px rgba(0,0,0,0.06)")}
+                className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-2xl"
               >
                 {/* Colored banner */}
-                <div className="relative h-24 flex-shrink-0" style={{ background: gradient }}>
+                <div className="relative h-24 shrink-0" style={{ background: gradient }}>
                   {/* Mode badge */}
                   <span className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full bg-white/20 text-white backdrop-blur-sm">
                     {modeLabel}
@@ -82,7 +75,8 @@ export default function FeaturedTutors() {
                     style={{ boxShadow: `0 4px 20px ${glow}` }}
                   >
                     {tutor.photo ? (
-                      <Image src={tutor.photo} alt={tutor.name} width={56} height={56} className="w-full h-full object-cover" />
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={tutor.photo} alt={tutor.name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-white font-black text-lg" style={{ background: gradient }}>
                         {initials(tutor.name)}
