@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Tuition } from "@/types";
+import { buildTuitionSearchHref } from "@/lib/tuitionSearch";
 
 const MOCK_PHONE = "+91 98765 43210";
 
@@ -35,6 +36,8 @@ export default function TuitionDetailClient({ tuition }: { tuition: Tuition }) {
   const city = tuition.city || tuition.locality || "your area";
   const modeLabel = MODE_LABELS[tuition.teaching_mode] ?? tuition.teaching_mode;
   const modeStyle = MODE_STYLES[tuition.teaching_mode] ?? "bg-gray-50 text-gray-600 border-gray-200";
+  const subjectCityQuery = `${tuition.subject} ${city}`;
+  const homeTuitionCityQuery = `home tuition ${city}`;
 
   function handleApply() {
     setApplied(true);
@@ -193,23 +196,23 @@ export default function TuitionDetailClient({ tuition }: { tuition: Tuition }) {
         <div className="p-4">
           <p className="text-[12px] text-gray-600 leading-relaxed mb-3">
             Looking for{" "}
-            <Link href={`/tuition?subject=${encodeURIComponent(tuition.subject)}`} className="font-semibold text-violet-600 hover:underline underline-offset-2">
+            <Link href={buildTuitionSearchHref(subjectCityQuery)} className="font-semibold text-violet-600 hover:underline underline-offset-2">
               {tuition.subject} tuition jobs in {city}
             </Link>{" "}
             for {tuition.course}? Many students need qualified{" "}
-            <Link href={`/tuition?location=${encodeURIComponent(city)}`} className="font-semibold text-violet-600 hover:underline underline-offset-2">
+            <Link href={buildTuitionSearchHref(city)} className="font-semibold text-violet-600 hover:underline underline-offset-2">
               tutors in {city}
             </Link>.
           </p>
           <div className="flex flex-wrap gap-1.5">
             <Link
-              href={`/tuition?subject=${encodeURIComponent(tuition.subject)}&location=${encodeURIComponent(city)}`}
+              href={buildTuitionSearchHref(subjectCityQuery)}
               className="text-[10px] font-semibold px-2.5 py-1.5 rounded-lg bg-violet-50 text-violet-700 border border-violet-100 hover:bg-violet-100 transition-all"
             >
               {tuition.subject} tutors in {city} →
             </Link>
             <Link
-              href={`/tuition?mode=home&location=${encodeURIComponent(city)}`}
+              href={buildTuitionSearchHref(homeTuitionCityQuery)}
               className="text-[10px] font-semibold px-2.5 py-1.5 rounded-lg bg-violet-50 text-violet-700 border border-violet-100 hover:bg-violet-100 transition-all"
             >
               Home tuition in {city} →
