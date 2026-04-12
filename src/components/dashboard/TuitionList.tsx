@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Tuition } from "@/types";
-import { getTuitionDetailSlug } from "@/lib/tuitionSlug";
 import { getMyPostedTuitions, changeTuitionStatus } from "@/lib/api/tuition";
 
 const modeConfig: Record<string, { bg: string; text: string; icon: string }> = {
@@ -96,8 +95,7 @@ export default function TuitionList() {
         return (
           <div
             key={t.id}
-            onClick={() => router.push(`/tuition/${getTuitionDetailSlug(t)}`)}
-            className="group p-3.5 bg-white rounded-2xl border border-gray-100 cursor-pointer hover:shadow-md hover:shadow-gray-100/80 hover:border-gray-200 transition-all duration-200"
+            className="p-3.5 bg-white rounded-2xl border border-gray-100 transition-all duration-200"
           >
             <div className="flex gap-3">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${mode.bg}`}>
@@ -144,10 +142,6 @@ export default function TuitionList() {
                   </span>
                 </div>
               </div>
-
-              <svg className="w-4 h-4 text-gray-300 group-hover:text-gray-400 shrink-0 mt-1 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
             </div>
           </div>
         );
