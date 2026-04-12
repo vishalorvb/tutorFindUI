@@ -1,7 +1,6 @@
 "use client";
 
 import type { TuitionFilters } from "@/types";
-import { colors } from "@/config/theme";
 
 interface TopBarProps {
   filters: TuitionFilters;
@@ -10,10 +9,10 @@ interface TopBarProps {
 
 export default function TopBar({ filters, onFilterChange }: TopBarProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-3 mb-6">
+    <div className="flex flex-col sm:flex-row gap-2 mb-4">
       <div className="relative flex-1">
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -30,28 +29,20 @@ export default function TopBar({ filters, onFilterChange }: TopBarProps) {
           placeholder="Search by subject..."
           value={filters.search}
           onChange={(e) => onFilterChange({ search: e.target.value })}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-900 placeholder:text-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-400 transition-all"
+          className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-200 text-[12px] font-medium text-gray-700 placeholder:text-gray-400 bg-white focus:outline-none focus:ring-1 focus:ring-blue-200 focus:border-blue-300 transition-all"
         />
       </div>
 
-      <div className="relative flex-1 sm:max-w-[220px]">
+      <div className="relative flex-1 sm:max-w-45">
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-rose-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
         >
           <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            fillRule="evenodd"
+            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+            clipRule="evenodd"
           />
         </svg>
         <input
@@ -59,21 +50,25 @@ export default function TopBar({ filters, onFilterChange }: TopBarProps) {
           placeholder="Location..."
           value={filters.location}
           onChange={(e) => onFilterChange({ location: e.target.value })}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-900 placeholder:text-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-400 transition-all"
+          className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-200 text-[12px] font-medium text-gray-700 placeholder:text-gray-400 bg-white focus:outline-none focus:ring-1 focus:ring-blue-200 focus:border-blue-300 transition-all"
         />
       </div>
 
-      <select
-        value={filters.sortBy}
-        onChange={(e) =>
-          onFilterChange({ sortBy: e.target.value as TuitionFilters["sortBy"] })
-        }
-        className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-400 transition-all cursor-pointer"
-        style={{ accentColor: colors.primary }}
-      >
-        <option value="latest">Latest</option>
-        <option value="fee-high-low">Budget High→Low</option>
-      </select>
+      <div className="relative shrink-0">
+        <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 7h4l2 9 4-18 4 18 2-9h4" />
+        </svg>
+        <select
+          value={filters.sortBy}
+          onChange={(e) =>
+            onFilterChange({ sortBy: e.target.value as TuitionFilters["sortBy"] })
+          }
+          className="pl-7 pr-3 py-2 rounded-lg border border-gray-200 text-[12px] font-medium text-gray-600 bg-white focus:outline-none focus:ring-1 focus:ring-blue-200 focus:border-blue-300 transition-all cursor-pointer appearance-none"
+        >
+          <option value="latest">Latest</option>
+          <option value="fee-high-low">Budget High→Low</option>
+        </select>
+      </div>
     </div>
   );
 }

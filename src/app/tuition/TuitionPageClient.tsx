@@ -71,16 +71,16 @@ export default function TuitionPageClient({
   }
 
   return (
-    <div className="px-2 sm:px-6 py-4 sm:py-8 max-w-7xl mx-auto">
+    <div className="px-2 sm:px-6 py-3 sm:py-6 max-w-7xl mx-auto">
       {/* Search Section */}
       <SearchBar />
       <FilterChips filters={filters} onFilterChange={handleFilterChange} />
 
-      <div className="flex flex-col lg:flex-row gap-6 mt-6">
+      <div className="flex flex-col lg:flex-row gap-2 lg:gap-6 mt-2 lg:mt-4">
         {/* Filter Sidebar */}
-        <div className="w-full lg:w-64 flex-shrink-0 mb-4 lg:mb-0">
+        <div className="w-full lg:w-64 flex-shrink-0 mb-1 lg:mb-0">
           <div className="lg:sticky lg:top-20">
-            <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
+            <FilterSidebar filters={filters} onFilterChange={handleFilterChange} tuitionCount={filtered.length} />
           </div>
         </div>
 
