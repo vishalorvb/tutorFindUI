@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buildTuitionSearchHref } from "@/lib/tuitionSearch";
 
 const cities = [
   { name: "Hyderabad", tutors: "450+", icon: "🏙️", gradient: "linear-gradient(135deg, #6366f1, #8b5cf6)" },
@@ -39,7 +40,7 @@ export default function PopularLocations() {
         {/* City grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
           {cities.map((city, i) => (
-            <Link key={i} href={`/tuition/${city.name.toLowerCase().replace(/\s+/g, "-")}`}
+            <Link key={i} href={buildTuitionSearchHref(city.name)}
               className="group relative flex flex-col items-center text-center p-5 bg-white border border-slate-100 rounded-2xl hover:border-transparent overflow-hidden transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-2xl">
 
               {/* Background fill */}

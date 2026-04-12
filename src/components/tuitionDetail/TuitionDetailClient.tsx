@@ -30,7 +30,6 @@ function timeAgo(dateStr: string): string {
 
 export default function TuitionDetailClient({ tuition }: { tuition: Tuition }) {
   const [applied, setApplied] = useState(false);
-  const [unlocks, setUnlocks] = useState(tuition.unlocks);
 
   const location = [tuition.locality, tuition.city].filter(Boolean).join(", ");
   const city = tuition.city || tuition.locality || "your area";
@@ -39,25 +38,6 @@ export default function TuitionDetailClient({ tuition }: { tuition: Tuition }) {
 
   function handleApply() {
     setApplied(true);
-    setUnlocks((prev) => prev + 1);
-  }
-
-  // Demand indicator
-  let demandIcon: string;
-  let demandText: string;
-  let demandClass: string;
-  if (unlocks === 0) {
-    demandIcon = "🚀";
-    demandText = "Be the first to apply";
-    demandClass = "from-blue-50 to-sky-50 border-blue-200/60 text-blue-700";
-  } else if (unlocks < 10) {
-    demandIcon = "👥";
-    demandText = `${unlocks} teachers contacted`;
-    demandClass = "from-amber-50 to-orange-50 border-amber-200/60 text-amber-700";
-  } else {
-    demandIcon = "🔥";
-    demandText = `High demand (${unlocks}+ applied)`;
-    demandClass = "from-red-50 to-rose-50 border-red-200/60 text-red-700";
   }
 
   return (
@@ -86,9 +66,9 @@ export default function TuitionDetailClient({ tuition }: { tuition: Tuition }) {
         <div className="pt-8 sm:pt-9 px-3 sm:px-5 pb-3">
           {/* Title row */}
           <div className="flex items-center gap-1.5 mb-0.5">
-            <h1 className="text-base sm:text-lg font-bold text-gray-900 leading-snug">
+            <h6 className="text-base sm:text-lg font-bold text-gray-900 leading-snug">
               {tuition.subject} Tutor for {tuition.course}
-            </h1>
+            </h6>
             {tuition.verify && (
               <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">
                 <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
@@ -137,15 +117,6 @@ export default function TuitionDetailClient({ tuition }: { tuition: Tuition }) {
               )}
               {tuition.teaching_mode}
             </span>
-          </div>
-
-          {/* ── Demand indicator ── */}
-          <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border bg-linear-to-r ${demandClass} mb-2`}>
-            <span className="text-base">{demandIcon}</span>
-            <div>
-              <span className="text-[11px] font-bold">{demandText}</span>
-              <p className="text-[10px] opacity-70">Apply now to increase your chances</p>
-            </div>
           </div>
 
           {/* ── Description ── */}

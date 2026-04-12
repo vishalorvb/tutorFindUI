@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTuitionBySlug } from "@/lib/api/tuition";
 import TuitionDetailClient from "@/components/tuitionDetail/TuitionDetailClient";
 import MobileCTA from "@/components/tuitionDetail/MobileCTA";
 import FAQSection from "@/components/tuitionDetail/FAQSection";
+import SearchRedirectClient from "./SearchRedirectClient";
 
 function isValidSlug(slug: string) {
   return /-\d+$/.test(slug);
@@ -55,7 +56,7 @@ export default async function TuitionDetailPage({
   // If slug doesn't match a valid tuition pattern, use it as a search query
   if (!isValidSlug(slug)) {
     const query = slug.replace(/[-_]+/g, " ").trim();
-    redirect(`/tuition?keyword=${encodeURIComponent(query)}`);
+    return <SearchRedirectClient query={query} />;
   }
 
   const tuition = await fetchTuition(slug);

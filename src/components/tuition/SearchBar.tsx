@@ -1,21 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function SearchBar() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+interface SearchBarProps {
+  initialQuery?: string;
+  loading?: boolean;
+  onSearch: (query: string) => void | Promise<void>;
+}
 
-  const [query, setQuery] = useState(searchParams.get("keyword") ?? "");
+export default function SearchBar({ initialQuery = "", loading = false, onSearch }: SearchBarProps) {
+  const [query, setQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
 
   function handleSearch() {
-    const trimmed = query.trim();
-    if (trimmed) {
-      router.push(`/tuition?keyword=${encodeURIComponent(trimmed)}`);
-    } else {
-      router.push("/tuition");
-    }
+    onSearch(query.trim());
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -24,7 +25,7 @@ export default function SearchBar() {
 
   function handleClear() {
     setQuery("");
-    router.push("/tuition");
+    onSearch("");
   }
 
   return (
@@ -44,6 +45,7 @@ export default function SearchBar() {
           {query && (
             <button
               onClick={handleClear}
+              disabled={loading}
               className="shrink-0 mr-1 p-1 text-gray-400 hover:text-gray-600 transition-colors"
               aria-label="Clear search"
             >
@@ -57,6 +59,7 @@ export default function SearchBar() {
         {/* Search button */}
         <button
           onClick={handleSearch}
+          disabled={loading}
           className="shrink-0 px-4 sm:px-5 flex items-center justify-center gap-1.5 text-white text-xs font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.97]"
           style={{ background: "linear-gradient(135deg, #f43f5e, #e11d48)" }}
           aria-label="Search"
@@ -64,7 +67,7 @@ export default function SearchBar() {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <span className="hidden sm:inline">Search</span>
+          <span className="hidden sm:inline">{loading ? "Searching..." : "Search"}</span>
         </button>
       </div>
     </div>

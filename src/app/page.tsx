@@ -19,7 +19,7 @@ const jsonLd = {
         "Find verified home and online tutors across India. Book a free demo class today.",
       potentialAction: {
         "@type": "SearchAction",
-        target: "https://hometutorly.com/tuition?keyword={search_term_string}",
+        target: "https://hometutorly.com/tuition?query={search_term_string}",
         "query-input": "required name=search_term_string",
       },
     },

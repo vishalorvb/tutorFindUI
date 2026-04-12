@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Tuition } from "@/types";
 import { colors } from "@/config/theme";
+import { getTuitionDetailSlug } from "@/lib/tuitionSlug";
 
 function timeAgo(dateStr: string): string {
   const now = Date.now();
@@ -36,8 +37,8 @@ export default function SimilarTuitions({
         {tuitions.map((t) => (
           <Link
             key={t.id}
-            href={`/tuition/${t.slug}`}
-            className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-violet-200 hover:bg-gradient-to-r hover:from-violet-50/50 hover:to-indigo-50/30 transition-all duration-200 group"
+            href={`/tuition/${getTuitionDetailSlug(t)}`}
+            className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-violet-200 hover:bg-linear-to-r hover:from-violet-50/50 hover:to-indigo-50/30 transition-all duration-200 group"
           >
             {/* Subject initial avatar */}
             <span

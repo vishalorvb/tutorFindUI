@@ -60,7 +60,7 @@ export default function HeroSearchBar() {
           Trending
         </span>
         {["Math Tutor", "Physics", "English", "IIT-JEE", "NEET"].map((tag) => (
-          <button key={tag} onClick={() => router.push(`/tuition?keyword=${encodeURIComponent(tag)}`)}
+          <button key={tag} onClick={() => router.push(`/tuition?query=${encodeURIComponent(tag)}`)}
             className="text-[8px] font-normal text-cyan-200/70 hover:text-white border border-cyan-400/25 hover:border-cyan-400/50 hover:bg-cyan-400/10 px-2 py-0.5 rounded-lg transition-all duration-150">
             {tag}
           </button>

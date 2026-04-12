@@ -1,5 +1,8 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 import type { Tuition } from "@/types";
+import { getTuitionDetailSlug } from "@/lib/tuitionSlug";
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -11,6 +14,7 @@ function timeAgo(dateStr: string): string {
 }
 
 export default function TuitionCard({ tuition }: { tuition: Tuition }) {
+  const router = useRouter();
   const {
     subject,
     course,
@@ -28,9 +32,25 @@ export default function TuitionCard({ tuition }: { tuition: Tuition }) {
 
   const isOnline = teaching_mode === "online";
   const hasPhoto = !!photo;
+  const detailHref = `/tuition/${getTuitionDetailSlug(tuition)}`;
+
+  function handleCardNavigation() {
+    router.push(detailHref);
+  }
 
   return (
-    <Link href={`/tuition/${slug}`} className="block group">
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={handleCardNavigation}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleCardNavigation();
+        }
+      }}
+      className="block group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 rounded-2xl"
+    >
       <div className={`relative bg-white rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 ${isOnline ? "border-blue-100/80 hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)]" : "border-amber-100/80 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)]"}`}>
 
         {/* ── Top section: colored left accent + content ── */}
@@ -135,6 +155,6 @@ export default function TuitionCard({ tuition }: { tuition: Tuition }) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

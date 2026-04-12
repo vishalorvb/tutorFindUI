@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buildTuitionSearchHref } from "@/lib/tuitionSearch";
 
 const subjects = [
   { name: "Math Tutor", slug: "math-tutor", icon: "📐", gradient: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)", glow: "rgba(99,102,241,0.25)", count: "320+ Tutors" },
@@ -23,7 +24,7 @@ export default function SubjectCategories() {
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight">
             Find a Tutor by{" "}
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Subject</span>
+            <span className="bg-linear-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Subject</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500 max-w-xl mx-auto">
             Browse verified tutors across all major subjects — school to competitive exams.
@@ -33,7 +34,7 @@ export default function SubjectCategories() {
         {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
           {subjects.map((subject, i) => (
-            <Link key={i} href={`/tuition/${subject.slug}`}
+            <Link key={i} href={buildTuitionSearchHref(subject.name)}
               className="group relative flex flex-col items-center text-center p-6 sm:p-7 bg-white border border-slate-100 rounded-3xl hover:border-transparent overflow-hidden transition-all duration-300 hover:-translate-y-1.5 cursor-pointer shadow-sm hover:shadow-2xl">
 
               {/* Background fill on hover */}

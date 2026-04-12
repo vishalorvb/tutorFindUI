@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import type { TuitionFilters, TeachingMode } from "@/types";
 import { subjects, courses, cities } from "@/data/mockTuitions";
+import { buildTuitionSearchHref } from "@/lib/tuitionSearch";
 
 interface FilterSidebarProps {
   filters: TuitionFilters;
@@ -253,7 +254,7 @@ export default function FilterSidebar({ filters, onFilterChange, tuitionCount }:
           {cities.map((c) => (
             <Link
               key={c}
-              href={`/tuition/${encodeURIComponent(c)}`}
+              href={buildTuitionSearchHref(c)}
               className="inline-flex items-center gap-1 text-[11px] font-medium py-1.5 px-2.5 rounded-lg bg-slate-50 text-slate-600 hover:bg-violet-50 hover:text-violet-700 border border-transparent hover:border-violet-200 transition-all"
             >
               <svg className="w-2.5 h-2.5 text-violet-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">

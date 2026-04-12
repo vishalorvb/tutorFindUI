@@ -4,15 +4,16 @@ import TuitionPageClient from "./TuitionPageClient";
 export default async function TuitionPage({
   searchParams,
 }: {
-  searchParams: Promise<{ keyword?: string; city?: string }>;
+  searchParams: Promise<{ query?: string; keyword?: string; city?: string }>;
 }) {
-  const { keyword = "", city = "" } = await searchParams;
-  const isSearchMode = keyword.length > 0;
+  const { query = "", keyword = "", city = "" } = await searchParams;
+  const searchQuery = (query || keyword).trim();
+  const isSearchMode = searchQuery.length > 0;
 
   let tuitions: import("@/types").Tuition[] = [];
   try {
     tuitions = isSearchMode
-      ? await searchTuitions(1, keyword)
+      ? await searchTuitions(1, searchQuery)
       : await getLatestTuitions(1);
     if (!Array.isArray(tuitions)) tuitions = [];
   } catch {
@@ -22,7 +23,7 @@ export default async function TuitionPage({
   return (
     <TuitionPageClient
       initialTuitions={tuitions}
-      keyword={keyword}
+      keyword={searchQuery}
       city={city}
       isSearchMode={isSearchMode}
     />
