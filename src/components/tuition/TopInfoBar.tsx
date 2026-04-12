@@ -1,6 +1,4 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { TuitionFilters } from "@/types";
 
 interface TopInfoBarProps {
@@ -13,8 +11,6 @@ interface TopInfoBarProps {
 }
 
 export default function TopInfoBar({ count, filters, onSortChange, keyword, city, isSearchMode }: TopInfoBarProps) {
-  const router = useRouter();
-
   const searchLabel = isSearchMode
     ? `Showing results for "${keyword}${city ? ` in ${city}` : ""}"`
     : "Latest Tuitions";
@@ -36,12 +32,12 @@ export default function TopInfoBar({ count, filters, onSortChange, keyword, city
           )}
         </div>
         {isSearchMode && (
-          <button
-            onClick={() => router.push("/tuition")}
+          <Link
+            href="/tuition"
             className="text-xs font-semibold text-violet-600 hover:text-violet-700 bg-violet-50 hover:bg-violet-100 px-3 py-1 rounded-full transition-colors"
           >
             Clear Search
-          </button>
+          </Link>
         )}
       </div>
       <select
