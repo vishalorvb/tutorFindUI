@@ -2,11 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getTuitionBySlug } from "@/lib/api/tuition";
-import DetailLayout from "@/components/tuitionDetail/DetailLayout";
-import TuitionHeader from "@/components/tuitionDetail/TuitionHeader";
-import TuitionInfo from "@/components/tuitionDetail/TuitionInfo";
-import TuitionDescription from "@/components/tuitionDetail/TuitionDescription";
-import ContactCard from "@/components/tuitionDetail/ContactCard";
+import TuitionDetailClient from "@/components/tuitionDetail/TuitionDetailClient";
 import MobileCTA from "@/components/tuitionDetail/MobileCTA";
 import FAQSection from "@/components/tuitionDetail/FAQSection";
 
@@ -106,42 +102,30 @@ export default async function TuitionDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <DetailLayout>
-        {/* Breadcrumb */}
-        <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500">
-          <Link href="/tuition" className="hover:text-violet-600 transition-colors font-medium">Tuitions</Link>
-          <svg className="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-          <span className="text-slate-700 font-semibold truncate max-w-[200px] sm:max-w-none">{tuition.subject} — {tuition.course}</span>
-        </nav>
+      <div className="min-h-screen bg-gray-50/50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 sm:py-6">
+          {/* Breadcrumb */}
+          <nav className="text-xs text-gray-400 mb-2 flex items-center gap-1.5">
+            <Link href="/" className="hover:text-violet-600 transition-colors">Home</Link>
+            <svg className="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            <Link href="/tuition" className="hover:text-violet-600 transition-colors">Tuitions</Link>
+            <svg className="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            <span className="text-gray-600 font-medium truncate">{tuition.subject} — {tuition.course}</span>
+          </nav>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Unified main card — full-bleed on mobile, card on desktop */}
-          <div className="lg:col-span-2 order-1">
-            <div className="bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-lg sm:shadow-slate-200/70 border-0 sm:border sm:border-slate-100 overflow-hidden -mx-4 sm:mx-0">
-              <TuitionHeader tuition={tuition} />
-              <div className="px-4 sm:px-8 pb-5 sm:pb-8 space-y-5">
-                <TuitionInfo tuition={tuition} />
-                <TuitionDescription tuition={tuition} />
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar — hidden on mobile, sticky on desktop */}
-          <div className="hidden lg:block lg:row-span-3">
-            <ContactCard tuition={tuition} />
-          </div>
-
-          {/* FAQ */}
-          <div className="lg:col-span-2 order-3 lg:order-none">
+          <div className="space-y-3">
+            <TuitionDetailClient tuition={tuition} />
             <FAQSection tuition={tuition} />
           </div>
-        </div>
 
-        {/* Bottom spacer for mobile sticky CTA */}
-        <div className="h-20 lg:hidden" />
-      </DetailLayout>
+          {/* Bottom spacer for mobile sticky CTA */}
+          <div className="h-20 lg:hidden" />
+        </div>
+      </div>
 
       {/* Sticky bottom CTA — mobile only */}
       <MobileCTA tuition={tuition} />
