@@ -50,6 +50,33 @@ select {
   background-image: none;
 }
 
+/* ── Global select / dropdown styling ── */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+select option {
+  background: #fff;
+  color: #1e293b;
+  font-size: 0.8125rem;
+  padding: 0.5rem 0.75rem;
+  font-weight: 500;
+}
+
+select option:checked {
+  background: #f0f9ff;
+  color: #0c4a6e;
+  font-weight: 600;
+}
+
+select:focus {
+  outline: none;
+}
+
 /* Premium gradient text utility */
 .gradient-text {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
