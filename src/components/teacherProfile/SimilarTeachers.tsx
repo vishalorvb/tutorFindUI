@@ -1,12 +1,8 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { getLatestTeachers } from "@/lib/api/teacher";
 import type { Teacher } from "@/types";
 
-export default function SimilarTeachers({
+export default async function SimilarTeachers({
   currentSlug,
   subject,
   location,
@@ -15,24 +11,22 @@ export default function SimilarTeachers({
   subject: string;
   location: string;
 }) {
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
-
-  useEffect(() => {
-    getLatestTeachers(1)
-      .then((data) => {
-        const keyword = subject.split(" ")[0]?.toLowerCase() ?? "";
-        const filtered = data
-          .filter(
-            (t) =>
-              t.slug !== currentSlug &&
-              (t.subject?.toLowerCase().includes(keyword) ||
-                t.location?.toLowerCase() === location.toLowerCase())
-          )
-          .slice(0, 4);
-        setTeachers(filtered.length > 0 ? filtered : data.filter((t) => t.slug !== currentSlug).slice(0, 4));
-      })
-      .catch(() => {});
-  }, [currentSlug, subject, location]);
+  let teachers: Teacher[] = [];
+  try {
+    const data = await getLatestTeachers(1);
+    const keyword = subject.split(" ")[0]?.toLowerCase() ?? "";
+    const filtered = data
+      .filter(
+        (t) =>
+          t.slug !== currentSlug &&
+          (t.subject?.toLowerCase().includes(keyword) ||
+            t.location?.toLowerCase() === location.toLowerCase())
+      )
+      .slice(0, 4);
+    teachers = filtered.length > 0 ? filtered : data.filter((t) => t.slug !== currentSlug).slice(0, 4);
+  } catch {
+    // silently fail
+  }
 
   if (teachers.length === 0) return null;
 
@@ -58,11 +52,10 @@ export default function SimilarTeachers({
             >
               <div className="w-11 h-11 rounded-xl overflow-hidden shrink-0 bg-linear-to-br from-violet-100 to-indigo-100">
                 {hasPhoto ? (
-                  <Image
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
                     src={t.photo!}
                     alt={t.name}
-                    width={44}
-                    height={44}
                     className="w-full h-full object-cover"
                   />
                 ) : (
