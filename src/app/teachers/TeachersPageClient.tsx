@@ -73,9 +73,9 @@ export default function TeachersPageClient({
     <div className="px-2 sm:px-6 py-4 sm:py-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+        <h3 className="text-2xl sm:text-3xl font-bold text-slate-900">
           {keyword ? `Tutors for "${keyword}"` : "Find Tutors Near You"}
-        </h1>
+        </h3>
         <p className="text-sm text-slate-500 mt-1">
           Browse verified home and online tutors across India
         </p>
@@ -107,14 +107,7 @@ export default function TeachersPageClient({
       </form>
 
       {/* Result count */}
-      <p className="text-sm text-slate-500 mb-4">
-        <span className="font-bold text-slate-900">{filtered.length}</span> tutors found
-        {(keyword || location) && (
-          <a href="/teachers" className="ml-3 text-violet-600 hover:underline text-xs font-medium">
-            Clear filters
-          </a>
-        )}
-      </p>
+
 
       <TeacherList teachers={filtered} keyword={keyword} />
 

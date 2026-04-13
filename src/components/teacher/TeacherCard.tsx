@@ -50,7 +50,9 @@ export default function TeacherCard({ teacher }: { teacher: Teacher }) {
   const modeLabel =
     teaching_mode === "both"
       ? "Online & Offline"
-      : teaching_mode.charAt(0).toUpperCase() + teaching_mode.slice(1);
+      : teaching_mode
+        ? teaching_mode.charAt(0).toUpperCase() + teaching_mode.slice(1)
+        : "N/A";
 
   const mode = modeConfig[teaching_mode] ?? fallback;
 
@@ -139,16 +141,16 @@ export default function TeacherCard({ teacher }: { teacher: Teacher }) {
 
             {/* Row 4: Buttons */}
             <div className="flex gap-1.5 mt-2">
-              <a
-                href={`tel:${teacher.phone_number || ""}`}
-                onClick={(e) => e.stopPropagation()}
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.location.href = `tel:${teacher.phone_number || ""}`; }}
                 className="flex-1 flex items-center justify-center gap-1 h-8 rounded-lg bg-linear-to-r from-violet-600 to-indigo-600 text-white text-[11px] font-semibold shadow-sm shadow-violet-600/30 hover:shadow-lg hover:shadow-violet-600/40 active:scale-[0.97] transition-all"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 Call Now
-              </a>
+              </button>
               <span className="flex-1 flex items-center justify-center gap-1 h-8 rounded-lg bg-violet-50/50 text-violet-600 text-[11px] font-semibold border border-violet-100 hover:bg-violet-50 active:scale-[0.97] transition-all">
                 View Profile
                 <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

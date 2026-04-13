@@ -38,9 +38,6 @@ export default function TuitionList({
 
   return (
     <div className="flex-1 min-w-0">
-      <p className="hidden lg:block text-sm font-semibold text-slate-500 mb-2">
-        <span className="text-slate-900 font-bold">{tuitions.length}</span> Tuitions Available
-      </p>
       <div className="grid grid-cols-1 gap-4">
         {tuitions.map((t) => (
           <TuitionCard key={t.id} tuition={t} />

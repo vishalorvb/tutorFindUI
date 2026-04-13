@@ -23,6 +23,7 @@ export default function TuitionPageClient({
   const router = useRouter();
   const [tuitions, setTuitions] = useState<Tuition[]>(initialTuitions);
   const [searchKeyword, setSearchKeyword] = useState(keyword);
+  const [searchLocation, setSearchLocation] = useState(city);
   const [isSearching, setIsSearching] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
@@ -49,22 +50,28 @@ export default function TuitionPageClient({
     return Array.from(byId.values());
   }
 
-  async function handleSearch(query: string) {
-    const trimmed = query.trim();
+  async function handleSearch(query: string, location: string) {
+    const combined = [query, location].filter(Boolean).join(" ");
     setIsSearching(true);
 
     try {
-      const nextTuitions = trimmed
-        ? await searchTuitions(1, trimmed)
+      const nextTuitions = combined
+        ? await searchTuitions(1, combined)
         : await getLatestTuitions(1);
 
-      setSearchKeyword(trimmed);
+      setSearchKeyword(query);
+      setSearchLocation(location);
       setTuitions(Array.isArray(nextTuitions) ? nextTuitions : []);
       setPage(1);
       setHasMore(Array.isArray(nextTuitions) && nextTuitions.length > 0);
 
+      const params = new URLSearchParams();
+      if (query) params.set("query", query);
+      if (location) params.set("location", location);
+      const qs = params.toString();
+
       startTransition(() => {
-        router.replace(trimmed ? `/tuition?query=${encodeURIComponent(trimmed)}` : "/tuition");
+        router.replace(qs ? `/tuition?${qs}` : "/tuition");
       });
     } finally {
       setIsSearching(false);
@@ -78,8 +85,9 @@ export default function TuitionPageClient({
     setIsLoadingMore(true);
 
     try {
-      const nextBatch = searchKeyword.trim()
-        ? await searchTuitions(nextPage, searchKeyword.trim())
+      const combined = [searchKeyword, searchLocation].filter(Boolean).join(" ").trim();
+      const nextBatch = combined
+        ? await searchTuitions(nextPage, combined)
         : await getLatestTuitions(nextPage);
 
       const nextItems = Array.isArray(nextBatch) ? nextBatch : [];
@@ -98,14 +106,14 @@ export default function TuitionPageClient({
 
   return (
     <div className="px-2 sm:px-6 py-3 sm:py-6 max-w-7xl mx-auto">
-      <SearchBar initialQuery={searchKeyword} loading={isSearching || isPending} onSearch={handleSearch} />
+      <SearchBar initialQuery={searchKeyword} initialLocation={searchLocation} loading={isSearching || isPending} onSearch={handleSearch} />
 
       <div className="mt-2 lg:mt-4">
         <TopInfoBar
           count={tuitions.length}
           keyword={searchKeyword}
-          city={city}
-          isSearchMode={Boolean(searchKeyword.trim())}
+          city={searchLocation}
+          isSearchMode={Boolean(searchKeyword.trim() || searchLocation.trim())}
         />
         <TuitionList
           tuitions={tuitions}
