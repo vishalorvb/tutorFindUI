@@ -1,16 +1,13 @@
 import Link from "next/link";
-import type { TuitionFilters } from "@/types";
 
 interface TopInfoBarProps {
   count: number;
-  filters: TuitionFilters;
-  onSortChange: (sort: string) => void;
   keyword?: string;
   city?: string;
   isSearchMode?: boolean;
 }
 
-export default function TopInfoBar({ count, filters, onSortChange, keyword, city, isSearchMode }: TopInfoBarProps) {
+export default function TopInfoBar({ count, keyword, city, isSearchMode }: TopInfoBarProps) {
   if (!isSearchMode) return null;
 
   const searchLabel = `Showing results for "${keyword}${city ? ` in ${city}` : ""}"`;
