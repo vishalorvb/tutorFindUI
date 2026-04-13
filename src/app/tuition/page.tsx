@@ -25,7 +25,6 @@ export default async function TuitionPage({
       initialTuitions={tuitions}
       keyword={searchQuery}
       city={city}
-      isSearchMode={isSearchMode}
     />
   );
 }
