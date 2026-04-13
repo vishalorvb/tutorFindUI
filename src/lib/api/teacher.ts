@@ -14,6 +14,22 @@ export async function getLatestTeachers(page: number = 1): Promise<Teacher[]> {
   return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
 }
 
+// ─── Search teachers (paginated, query + location) ───
+
+export async function searchTeachers(page: number = 1, query?: string, location?: string): Promise<Teacher[]> {
+  const params = new URLSearchParams();
+  if (query) params.set("query", query);
+  if (location) params.set("location", location);
+  const qs = params.toString();
+  const res = await fetch(buildUrl(`/teacher/search/${page}/`) + (qs ? `?${qs}` : ""));
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Failed to search teachers: ${res.status}`);
+  }
+  const json = await res.json();
+  return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
+}
+
 export async function getTeacherBySlug(slug: string): Promise<Teacher> {
   const res = await fetch(buildUrl(`/teacher/getTeacherBySlug/${slug}`), {
     next: { revalidate: 60 },

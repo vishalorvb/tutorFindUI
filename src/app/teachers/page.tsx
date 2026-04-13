@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getLatestTeachers } from "@/lib/api/teacher";
+import { getLatestTeachers, searchTeachers } from "@/lib/api/teacher";
 import TeachersPageClient from "./TeachersPageClient";
 
 export const metadata: Metadata = {
@@ -16,10 +16,13 @@ export default async function TeachersPage({
   searchParams: Promise<{ keyword?: string; location?: string }>;
 }) {
   const { keyword = "", location = "" } = await searchParams;
+  const hasSearch = keyword.trim().length > 0 || location.trim().length > 0;
 
   let teachers: import("@/types").Teacher[] = [];
   try {
-    teachers = await getLatestTeachers(1);
+    teachers = hasSearch
+      ? await searchTeachers(1, keyword.trim() || undefined, location.trim() || undefined)
+      : await getLatestTeachers(1);
     if (!Array.isArray(teachers)) teachers = [];
   } catch {
     // teachers already initialized as []
