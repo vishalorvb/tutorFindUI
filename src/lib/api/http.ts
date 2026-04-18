@@ -1,18 +1,10 @@
-import type { CompleteProfileResponse, LoginResponse, SendOtpResponse, VerifyOtpResponse } from "@/types";
+import axios, { AxiosError } from "axios";
+import { getJwt } from "@/lib/auth/session";
 
-type KnownApiResponse = SendOtpResponse | VerifyOtpResponse | CompleteProfileResponse | LoginResponse;
-
-interface ApiErrorPayload {
-  message?: string;
-  error?: string;
-}
-
-interface ApiRequestOptions extends Omit<RequestInit, "body"> {
-  body?: unknown;
-}
-
+// ─── Base URL ───
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
 
+// ─── Custom error class ───
 export class ApiClientError extends Error {
   status: number;
   details?: unknown;
@@ -25,92 +17,53 @@ export class ApiClientError extends Error {
   }
 }
 
-export function buildUrl(path: string): string {
-  if (/^https?:\/\//.test(path)) {
-    return path;
-  }
+// ─── Centralized axios instance ───
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: { Accept: "application/json" },
+});
 
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return `${API_BASE_URL}${normalizedPath}`;
-}
-
-async function parseResponse(response: Response): Promise<unknown> {
-  if (response.status === 204) {
-    return null;
-  }
-
-  const contentType = response.headers.get("content-type") ?? "";
-  if (contentType.includes("application/json")) {
-    return response.json();
-  }
-
-  const text = await response.text();
-  return text ? { message: text } : null;
-}
-
-function extractErrorMessage(payload: unknown, fallback: string): string {
-  if (!payload) {
-    return fallback;
-  }
-
-  if (typeof payload === "string") {
-    return payload;
-  }
-
-  if (typeof payload === "object") {
-    const candidate = payload as ApiErrorPayload;
-    if (candidate.message) {
-      return candidate.message;
-    }
-    if (candidate.error) {
-      return candidate.error;
+// Request interceptor — attach JWT
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = getJwt();
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
   }
 
-  return fallback;
-}
+  return config;
+});
 
-export async function apiRequest<T extends KnownApiResponse>(path: string, options: ApiRequestOptions = {}): Promise<T> {
-  const { body, headers, ...rest } = options;
+// Response interceptor — handle 401
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
 
-  const response = await fetch(buildUrl(path), {
-    ...rest,
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      ...headers,
-    },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
-
-  const payload = await parseResponse(response);
-
-  if (!response.ok) {
-    if (response.status === 401 && typeof window !== "undefined") {
+    if (error.response?.status === 401 && typeof window !== "undefined") {
       document.cookie = "hometutorly.jwt=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax";
       const redirect = window.location.pathname;
       window.location.href = `/login?redirect=${encodeURIComponent(redirect)}`;
-      throw new ApiClientError("Session expired. Redirecting to login.", 401, payload);
     }
 
-    throw new ApiClientError(
-      extractErrorMessage(payload, `Request failed with status ${response.status}`),
-      response.status,
-      payload,
+    const data = error.response?.data as Record<string, unknown> | undefined;
+    const message =
+      (data?.message as string) ??
+      (data?.error as string) ??
+      error.message ??
+      `Request failed with status ${error.response?.status}`;
+
+    return Promise.reject(
+      new ApiClientError(message, error.response?.status ?? 0, data),
     );
-  }
+  },
+);
 
-  return (payload ?? {}) as T;
-}
+export default api;
 
+// ─── Helper: extract user-friendly error message ───
 export function getApiErrorMessage(error: unknown, fallback: string): string {
-  if (error instanceof ApiClientError) {
-    return error.message;
-  }
-
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-
+  if (error instanceof ApiClientError) return error.message;
+  if (error instanceof Error && error.message) return error.message;
   return fallback;
 }

@@ -1,30 +1,18 @@
-import { buildUrl } from "./http";
+import api from "./http";
 import type { Tuition } from "@/types";
-import { getJwt } from "@/lib/auth/session";
 
 // ─── Fetch latest tuitions (paginated) ───
 
 export async function getLatestTuitions(page: number = 1): Promise<Tuition[]> {
-  const res = await fetch(buildUrl(`/tuition/getLatesttuition/${page}`));
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Failed to fetch latest tuitions: ${res.status}`);
-  }
-  const json = await res.json();
-  return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
+  const { data } = await api.get(`/tuition/getLatesttuition/${page}`);
+  return Array.isArray(data) ? data : Array.isArray(data.data) ? data.data : [];
 }
 
 // ─── Search tuitions (paginated) ───
 
 export async function searchTuitions(page: number = 1, query: string): Promise<Tuition[]> {
-  const encoded = encodeURIComponent(query);
-  const res = await fetch(buildUrl(`/tuition/search/${page}/`) + `?query=${encoded}`);
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Failed to search tuitions: ${res.status}`);
-  }
-  const json = await res.json();
-  return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
+  const { data } = await api.get(`/tuition/search/${page}/`, { params: { query } });
+  return Array.isArray(data) ? data : Array.isArray(data.data) ? data.data : [];
 }
 
 // ─── Get tuition by slug (extracts ID from end of slug) ───
@@ -35,13 +23,8 @@ export async function getTuitionBySlug(slug: string): Promise<Tuition> {
     throw new Error("Invalid tuition slug");
   }
   const id = match[1];
-  const res = await fetch(buildUrl(`/tuition/getTuitionByid/${id}`));
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Failed to fetch tuition: ${res.status}`);
-  }
-  const json = await res.json();
-  return json.data ?? json;
+  const { data } = await api.get(`/tuition/getTuitionByid/${id}`);
+  return data.data ?? data;
 }
 
 // ─── Create tuition ───
@@ -78,53 +61,21 @@ export async function createTuition(payload: CreateTuitionPayload, jwt: string):
     console.log("[createTuition] JWT:", jwt);
   }
 
-  const res = await fetch(buildUrl("/tuition/createTuition"), {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${jwt}`,
-      // Do NOT set Content-Type when sending FormData
-    },
-    body: formData,
+  const res = await api.post("/tuition/createTuition", formData, {
+    headers: { Authorization: `Bearer ${jwt}` },
   });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Request failed: ${res.status}`);
-  }
-  return res.json();
+  return res.data;
 }
 
 // ─── Toggle tuition status ───
 
 export async function changeTuitionStatus(tuitionId: number): Promise<void> {
-  const token = getJwt();
-  const res = await fetch(buildUrl("/tuition/changeStatus"), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify({ tuition_id: tuitionId }),
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to change tuition status: ${res.status}`);
-  }
+  await api.post("/tuition/changeStatus", { tuition_id: tuitionId });
 }
 
 // ─── Fetch current user's posted tuitions ───
 
 export async function getMyPostedTuitions(): Promise<Tuition[]> {
-  const token = getJwt();
-  const res = await fetch(buildUrl("/tuition/getmypostedTuition"), {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch posted tuitions: ${res.status}`);
-  }
-  const json = await res.json();
-  return json.data ?? [];
+  const { data } = await api.get("/tuition/getmypostedTuition");
+  return data.data ?? [];
 }

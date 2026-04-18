@@ -1,59 +1,33 @@
-import { buildUrl } from "./http";
+import api from "./http";
 import type { TeacherFormData, Teacher } from "@/types";
-import { getJwt } from "@/lib/auth/session";
 
 // ─── Fetch latest teachers (paginated) ───
 
 export async function getLatestTeachers(page: number = 1): Promise<Teacher[]> {
-  const res = await fetch(buildUrl(`/teacher/latestTeacher/${page}`));
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Failed to fetch teachers: ${res.status}`);
-  }
-  const json = await res.json();
-  return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
+  const { data } = await api.get(`/teacher/latestTeacher/${page}`);
+  return Array.isArray(data) ? data : Array.isArray(data.data) ? data.data : [];
 }
 
 // ─── Search teachers (paginated, query + location) ───
 
 export async function searchTeachers(page: number = 1, query?: string, location?: string): Promise<Teacher[]> {
-  const params = new URLSearchParams();
-  if (query) params.set("query", query);
-  if (location) params.set("location", location);
-  const qs = params.toString();
-  const res = await fetch(buildUrl(`/teacher/search/${page}/`) + (qs ? `?${qs}` : ""));
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Failed to search teachers: ${res.status}`);
-  }
-  const json = await res.json();
-  return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];
+  const params: Record<string, string> = {};
+  if (query) params.query = query;
+  if (location) params.location = location;
+  const { data } = await api.get(`/teacher/search/${page}/`, { params });
+  return Array.isArray(data) ? data : Array.isArray(data.data) ? data.data : [];
 }
 
 export async function getTeacherBySlug(slug: string): Promise<Teacher> {
-  const res = await fetch(buildUrl(`/teacher/getTeacherBySlug/${slug}`), {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Teacher not found: ${res.status}`);
-  }
-  const json = await res.json();
-  return json.data ?? json;
+  const { data } = await api.get(`/teacher/getTeacherBySlug/${slug}`);
+  return data.data ?? data;
 }
 
 // ─── Fetch teacher by ID ───
 
 export async function getTeacherById(id: number): Promise<Teacher> {
-  const res = await fetch(buildUrl(`/teacher/getTeacherById/${id}`), {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Teacher not found: ${res.status}`);
-  }
-  const json = await res.json();
-  return json.data ?? json;
+  const { data } = await api.get(`/teacher/getTeacherById/${id}`);
+  return data.data ?? data;
 }
 
 export async function createTeacher(data: TeacherFormData, jwt: string) {
@@ -72,52 +46,24 @@ export async function createTeacher(data: TeacherFormData, jwt: string) {
   formData.append("location", data.location);
   if (data.photo) formData.append("photo", data.photo);
 
-  const res = await fetch(buildUrl("/teacher/create_teacher"), {
-    method: "POST",
+  const res = await api.post("/teacher/create_teacher", formData, {
     headers: { Authorization: `Bearer ${jwt}` },
-    body: formData,
   });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Request failed: ${res.status}`);
-  }
-  return res.json();
+  return res.data;
 }
 
 // ─── Fetch current user's teacher profiles ───
 
 export async function getMyTeacherProfiles(): Promise<Teacher[]> {
-  const token = getJwt();
-  const res = await fetch(buildUrl("/teacher/my-teacher-profile"), {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch teacher profiles: ${res.status}`);
-  }
-  const json = await res.json();
-  return json.teachers ?? [];
+  const { data } = await api.get("/teacher/my-teacher-profile");
+  return data.teachers ?? [];
 }
 
 // ─── Fetch single teacher info by ID ───
 
 export async function getTeacherInfo(id: number): Promise<Teacher> {
-  const token = getJwt();
-  const res = await fetch(buildUrl(`/teacher/getTecher_info/${id}`), {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch teacher info: ${res.status}`);
-  }
-  return res.json();
+  const { data } = await api.get(`/teacher/getTecher_info/${id}`);
+  return data;
 }
 
 // ─── Update teacher profile ───
@@ -138,15 +84,8 @@ export async function updateTeacher(id: number, data: TeacherFormData, jwt: stri
   formData.append("location", data.location);
   if (data.photo) formData.append("photo", data.photo);
 
-  const res = await fetch(buildUrl(`/teacher/update_teacher_profile/${id}`), {
-    method: "PUT",
+  const res = await api.put(`/teacher/update_teacher_profile/${id}`, formData, {
     headers: { Authorization: `Bearer ${jwt}` },
-    body: formData,
   });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Request failed: ${res.status}`);
-  }
-  return res.json();
+  return res.data;
 }
