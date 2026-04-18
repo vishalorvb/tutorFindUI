@@ -7,6 +7,7 @@ import SearchBar from "@/components/tuition/SearchBar";
 import TuitionList from "@/components/tuition/TuitionList";
 import FilterSidebar from "@/components/tuition/FilterSidebar";
 import { getLatestTuitions, searchTuitions } from "@/lib/api/tuition";
+import { useLoader } from "@/components/loader/LoaderContext";
 
 interface TuitionPageClientProps {
   initialTuitions: Tuition[];
@@ -20,6 +21,7 @@ export default function TuitionPageClient({
   city,
 }: TuitionPageClientProps) {
   const router = useRouter();
+  const { loader, setLoader } = useLoader();
   const [tuitions, setTuitions] = useState<Tuition[]>(initialTuitions);
   const [searchKeyword, setSearchKeyword] = useState(keyword);
   const [searchLocation, setSearchLocation] = useState(city);
@@ -74,7 +76,7 @@ export default function TuitionPageClient({
 
   async function handleSearch(query: string, location: string) {
     const combined = [query, location].filter(Boolean).join(" ");
-    setIsSearching(true);
+    setLoader(true);
 
     try {
       const nextTuitions = combined
@@ -96,7 +98,7 @@ export default function TuitionPageClient({
         router.replace(qs ? `/tuition?${qs}` : "/tuition");
       });
     } finally {
-      setIsSearching(false);
+      setLoader(false);
     }
   }
 
@@ -145,7 +147,7 @@ export default function TuitionPageClient({
 
   return (
     <div className="px-2 sm:px-6 py-3 sm:py-6 max-w-7xl mx-auto">
-      <SearchBar initialQuery={searchKeyword} initialLocation={searchLocation} loading={isSearching || isPending} onSearch={handleSearch} />
+      <SearchBar initialQuery={searchKeyword} initialLocation={searchLocation} loading={loader || isPending} onSearch={handleSearch} />
 
       <div className="mt-2 lg:mt-4">
 
