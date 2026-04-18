@@ -51,7 +51,7 @@ export default function TeacherProfile({ teacher }: { teacher: Teacher }) {
         <div className="pt-8 sm:pt-9 px-3 sm:px-5 pb-3">
           {/* Name row */}
           <div className="flex items-center gap-1.5 mb-0.5">
-            <h1 className="text-base sm:text-lg font-bold text-gray-900 truncate">{teacher.name}</h1>
+            <h4 className="text-base sm:text-lg font-bold text-gray-900 truncate">{teacher.name}</h4>
             <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">
               <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
               Verified
